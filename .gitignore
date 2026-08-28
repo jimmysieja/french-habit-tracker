@@ -1,0 +1,23 @@
+# --- secrets: never commit ---
+.env
+.env.local
+# Google service-account key(s). This repo has no other .json at its root;
+# if you add one later, un-ignore it explicitly with:  !myfile.json
+*.json
+
+# --- generated output ---
+dashboard.html
+*.local.html
+
+# --- python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# --- os / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
