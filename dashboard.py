@@ -14,6 +14,7 @@ Re-run it whenever you want the latest picture - it always reflects the sheet.
 
 from __future__ import annotations
 
+import os
 import sys
 import html
 import datetime as dt
@@ -319,54 +320,26 @@ def dow_svg(df: pd.DataFrame) -> str:
 # --------------------------------------------------------------------------- #
 # assemble page
 # --------------------------------------------------------------------------- #
-CSS = """
-:root{
-  color-scheme: light;
-  --plane:#f9f9f7; --surface:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
-  --grid:#e1e0d9; --base:#c3c2b7; --border:rgba(11,11,11,.10);
-  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a;
-  --series-4:#eda100; --series-5:#e87ba4; --series-6:#008300;
-  --accent:#2a78d6; --good:#006300;
-  --heat-0:#ecebe4; --heat-1:#cde2fb; --heat-2:#9ec5f4; --heat-3:#5598e7; --heat-4:#184f95;
-}
-@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
-  color-scheme: dark;
-  --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
-  --grid:#2c2c2a; --base:#383835; --border:rgba(255,255,255,.10);
-  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
-  --series-4:#c98500; --series-5:#d55181; --series-6:#008300;
-  --accent:#3987e5; --good:#0ca30c;
-  --heat-0:#232320; --heat-1:#16324f; --heat-2:#1c5cab; --heat-3:#3987e5; --heat-4:#9ec5f4;
-}}
-:root[data-theme="dark"]{
-  color-scheme: dark;
-  --plane:#0d0d0d; --surface:#1a1a19; --ink:#fff; --ink2:#c3c2b7; --muted:#898781;
-  --grid:#2c2c2a; --base:#383835; --border:rgba(255,255,255,.10);
-  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70;
-  --series-4:#c98500; --series-5:#d55181; --series-6:#008300;
-  --accent:#3987e5; --good:#0ca30c;
-  --heat-0:#232320; --heat-1:#16324f; --heat-2:#1c5cab; --heat-3:#3987e5; --heat-4:#9ec5f4;
-}
-*{box-sizing:border-box}
-body{margin:0;background:var(--plane);color:var(--ink);
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;
-  -webkit-font-smoothing:antialiased}
-.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 72px}
-header h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
-header p{margin:0;color:var(--ink2);font-size:14px}
-section{margin-top:40px}
-h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
-  margin:0 0 14px;font-weight:600}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
-.tile .lab{font-size:12px;color:var(--ink2);margin-bottom:6px}
-.tile .val{font-size:30px;font-weight:600;letter-spacing:-.02em}
-.tile .sub{font-size:12px;color:var(--muted);margin-top:2px}
-.tile.hero .val{font-size:44px;color:var(--accent)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
-.grid svg{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px}
-/* panel text */
+_TOK_LIGHT = (
+    "--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;"
+    "--grid:#e1e0d9;--base:#c3c2b7;--border:rgba(11,11,11,.10);"
+    "--series-1:#2a78d6;--series-2:#eb6834;--series-3:#1baf7a;"
+    "--series-4:#eda100;--series-5:#e87ba4;--series-6:#008300;"
+    "--accent:#2a78d6;--good:#006300;"
+    "--heat-0:#ecebe4;--heat-1:#cde2fb;--heat-2:#9ec5f4;--heat-3:#5598e7;--heat-4:#184f95;"
+)
+_TOK_DARK = (
+    "--plane:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;"
+    "--grid:#2c2c2a;--base:#383835;--border:rgba(255,255,255,.10);"
+    "--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;"
+    "--series-4:#c98500;--series-5:#d55181;--series-6:#008300;"
+    "--accent:#3987e5;--good:#0ca30c;"
+    "--heat-0:#232320;--heat-1:#16324f;--heat-2:#1c5cab;--heat-3:#3987e5;--heat-4:#9ec5f4;"
+)
+
+# rules that style the hand-built SVG marks - shared by the page and by the
+# standalone SVG files exported for the README.
+CHART_CSS = """
 .p-title{fill:var(--ink);font-size:12px;font-weight:600}
 .p-sub{fill:var(--muted);font-size:10px}
 .p-line{fill:none;stroke:var(--series-1);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
@@ -393,7 +366,32 @@ rect:hover{opacity:.8}
 .h-obj{stroke:var(--ink);stroke-width:2}
 .ts-lab{fill:var(--ink);font-size:11px;font-weight:600}
 .ts-val{fill:var(--ink2);font-size:11px}
-/* momentum */
+"""
+
+# page chrome - layout only, not used by the standalone SVGs
+_LAYOUT_CSS = """
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 72px}
+header h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+header p{margin:0;color:var(--ink2);font-size:14px}
+header a{color:var(--accent);text-decoration:none}
+section{margin-top:40px}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+  margin:0 0 14px;font-weight:600}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
+.tile .lab{font-size:12px;color:var(--ink2);margin-bottom:6px}
+.tile .val{font-size:30px;font-weight:600;letter-spacing:-.02em}
+.tile .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.tile.hero .val{font-size:44px;color:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.grid svg{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:6px}
+.b-bar:hover{fill:var(--accent);opacity:.85}
+rect:hover{opacity:.8}
 .mom{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 .mom .m{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px}
 .mom .sk{font-size:12px;color:var(--ink2)}
@@ -407,7 +405,59 @@ table{border-collapse:collapse;width:100%;margin-top:12px;font-size:12px;
 th,td{text-align:right;padding:6px 10px;border-bottom:1px solid var(--border)}
 th:first-child,td:first-child{text-align:left}
 .foot{margin-top:48px;font-size:12px;color:var(--muted);text-align:center}
+.foot a{color:var(--muted)}
 """
+
+CSS = (
+    f":root{{color-scheme:light;{_TOK_LIGHT}}}"
+    f'@media (prefers-color-scheme:dark){{:root:not([data-theme="light"])'
+    f"{{color-scheme:dark;{_TOK_DARK}}}}}"
+    f':root[data-theme="dark"]{{color-scheme:dark;{_TOK_DARK}}}'
+    f"{_LAYOUT_CSS}{CHART_CSS}"
+)
+
+
+def _token_map(tokens: str) -> dict[str, str]:
+    out = {}
+    for decl in tokens.split(";"):
+        if ":" in decl:
+            k, v = decl.split(":", 1)
+            out[k.strip()] = v.strip()
+    return out
+
+
+def standalone_svg(body: str, theme: str = "light") -> str:
+    """Turn one of the var()/class-based chart strings into a self-contained
+    .svg file: every colour resolved to a concrete hex for `theme`, xmlns added,
+    the mark styles inlined. No CSS variables remain, so it renders anywhere
+    (GitHub README, an <img> tag, Slack)."""
+    import re
+
+    pal = _token_map(_TOK_LIGHT if theme == "light" else _TOK_DARK)
+    sub = lambda text: re.sub(r"var\((--[\w-]+)\)", lambda m: pal.get(m.group(1), m.group(0)), text)
+    style = f"<style>{sub(CHART_CSS)}</style>"
+    body = sub(body).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ', 1)
+    cut = body.index(">") + 1
+    return body[:cut] + style + body[cut:]
+
+
+def export_assets(df: pd.DataFrame, obj: "pd.DataFrame | None", outdir="assets") -> list[Path]:
+    """Write light+dark standalone SVGs used by the README."""
+    out = Path(outdir)
+    out.mkdir(parents=True, exist_ok=True)
+    charts = {
+        "calendar": heatmap_svg(df),
+        "skills": balance_svg(df, obj),
+        "time-split": timesplit_svg(df),
+        "weekday": dow_svg(df),
+    }
+    written = []
+    for name, svg in charts.items():
+        for theme in ("light", "dark"):
+            p = out / f"{name}-{theme}.svg"
+            p.write_text(standalone_svg(svg, theme), encoding="utf-8")
+            written.append(p)
+    return written
 
 
 def momentum_block(df: pd.DataFrame) -> str:
@@ -493,12 +543,14 @@ def page_body(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
         + "".join(trows) + "</tbody></table>"
     )
 
-    stamp = dt.datetime.now().strftime("%d %b %Y, %H:%M")
+    stamp = dt.datetime.now(dt.timezone.utc).strftime("%d %b %Y, %H:%M UTC")
+    repo = os.environ.get("REPO_URL", "").rstrip("/")
+    repo_link = f' · <a href="{repo}">source</a>' if repo else ""
     return f"""<title>French Study Dashboard</title><style>{CSS}</style>
 <div class="wrap">
 <header>
-  <h1>French study dashboard</h1>
-  <p>{start:%d %b %Y} – {end:%d %b %Y} · {len(df)} days tracked · generated {stamp}</p>
+  <h1>🇫🇷 Learning French, tracked daily</h1>
+  <p>{start:%d %b %Y} – {end:%d %b %Y} · {len(df)} days · rebuilt {stamp}{repo_link}</p>
 </header>
 
 <section><div class="tiles">{tile_html}</div></section>
@@ -552,7 +604,7 @@ def page_body(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
   {weekly_table(df, obj)}
 </details>
 
-<p class="foot">Built from the Daily Log tab · re-run <code>python dashboard.py</code> to refresh.</p>
+<p class="foot">Built from a Google Sheet with pandas + hand-drawn SVG · rebuilt automatically by GitHub Actions{repo_link}</p>
 </div>"""
 
 

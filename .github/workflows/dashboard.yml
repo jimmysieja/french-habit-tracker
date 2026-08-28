@@ -1,0 +1,66 @@
+name: Rebuild dashboard
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"        # every 6 hours
+  workflow_dispatch:              # run on demand from the Actions tab
+  push:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+      - "assets/**"
+      - "public/**"
+
+permissions:
+  contents: write                 # commit refreshed README + assets
+  pages: write                    # deploy Pages
+  id-token: write
+
+concurrency:
+  group: dashboard
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Write service-account key
+        env:
+          KEY: ${{ secrets.FR_SERVICE_ACCOUNT_JSON }}
+        run: printf '%s' "$KEY" > service-account.json
+
+      - name: Build
+        env:
+          FR_SERVICE_ACCOUNT: service-account.json
+          FR_SHEET_KEY: ${{ secrets.FR_SHEET_KEY }}
+        run: python build.py
+
+      - name: Commit refreshed stats
+        run: |
+          rm -f service-account.json
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md assets
+          git diff --staged --quiet || git commit -m "chore: refresh stats [skip ci]"
+          git push
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - uses: actions/deploy-pages@v4
+        id: deploy

@@ -1,103 +1,87 @@
-# French habit tracker — analytics
+# 🇫🇷 Learning French, in public
 
-Pulls a language-learning **Daily Log** from Google Sheets and turns it into real
-analytics: streaks, trends, skill balance, weekly-objective attainment, and a
-rough **"time on French"** estimate that converts card/lesson/prompt counts into
-minutes. Ships a text report and a self-contained HTML dashboard.
+I log every French study session — listening, grammar, vocab, reading, writing,
+speaking — in a Google Sheet. This repo reads that sheet and rebuilds the stats
+below **every few hours**, so the numbers here are always current.
 
-> Run `python dashboard.py` to build the dashboard locally. Drop a screenshot in
-> `docs/dashboard.png` to show it off here.
+<!-- STATS:START -->
 
-## What it produces
+_Auto-updated 28 Aug 2026, 03:27 UTC — covering 01 Jun 2026 → 27 Aug 2026._
 
-| Command | Output |
-|---|---|
-| `python analytics.py` | full text report to the terminal |
-| `python analytics.py --push` | writes a summary block into the sheet's Analytics tab |
-| `python dashboard.py` | builds `dashboard.html` (streak calendar, rolling-average trends, weekly-vs-target, skill balance, time split, day-of-week) and opens it |
-| `python dashboard.py --body-only --out page.html` | headless HTML fragment (e.g. to embed in a website) |
+![streak](https://img.shields.io/badge/streak-11%20days-2a78d6) ![longest](https://img.shields.io/badge/longest-47%20days-1baf7a) ![time on French](https://img.shields.io/badge/time%20on%20French-91%20h-eb6834) ![days tracked](https://img.shields.io/badge/days%20tracked-88-8957e5) ![consistency](https://img.shields.io/badge/consistency-95%25-eda100)
 
-Everything is importable too:
+### At a glance
 
-```python
-from analytics import load_daily_log, streaks, totals, skill_balance
-df = load_daily_log()
-print(streaks(df))
-```
+| | |
+|--|--|
+| 🔥 Current streak | **11 days** (still going) |
+| 🏆 Longest streak | **47 days** (01 Jun – 17 Jul) |
+| 📆 Active days | **84 / 88** (95%) |
+| ⏱ Estimated time on French | **~91 hours** (64 h logged directly) |
 
-## Setup
+### 📅 Study calendar
 
-### 1. Install
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/calendar-dark.svg">
+  <img alt="Daily study calendar, shaded by minutes studied" src="assets/calendar-light.svg" width="100%">
+</picture>
 
-```bash
-python -m venv .venv && . .venv/Scripts/activate   # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-```
+### 📊 By skill
 
-### 2. Google service account
+| Skill | Total | Est. time | Days practised | Weeks hit target |
+|-------|------:|----------:|---------------:|-----------------:|
+| Listening | 2,959 min | 49.3 h | 67 (76%) | 67% |
+| Grammar | 197 quizzes | 16.4 h | 55 (62%) | 25% |
+| Vocab | 4,878 cards | 6.8 h | 45 (51%) | 33% |
+| Reading | 310 min | 5.2 h | 14 (16%) | 8% |
+| Writing | 10 prompts | 4.2 h | 7 (8%) | 17% |
+| Speaking | 545 min | 9.1 h | 22 (25%) | 42% |
 
-1. In the [Google Cloud console](https://console.cloud.google.com/) create a
-   project, enable the **Google Sheets API** and **Google Drive API**.
-2. Create a **service account** and download its **JSON key**.
-3. Share your spreadsheet with the service account's email
-   (`…@….iam.gserviceaccount.com`) as a **Viewer** (or Editor if you want
-   `--push` to work).
+### ⚖️ Where the time goes  ·  📆 By weekday
 
-### 3. Configure
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/time-split-dark.svg">
+  <img alt="Share of estimated study time by skill" src="assets/time-split-light.svg" width="100%">
+</picture>
 
-```bash
-cp .env.example .env
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/weekday-dark.svg">
+  <img alt="Average minutes studied by day of week" src="assets/weekday-light.svg" width="100%">
+</picture>
 
-Then edit `.env`:
+### 🚀 Last 7 days
 
-```
-FR_SERVICE_ACCOUNT=./service-account.json
-FR_SHEET_KEY=1AbC…the id from your sheet URL…
-```
+| Skill | Last 7 days | vs. previous 7 |
+|-------|------------:|:--------------|
+| Listening | 290 min | ▲ +100% |
+| Grammar | 9 quizzes | — |
+| Vocab | 768 cards | ▲ +72% |
+| Reading | 0 min | — |
+| Writing | 1 prompts | ▼ -75% |
+| Speaking | 60 min | ▲ +0% |
 
-`.env` and `*.json` are git-ignored — your credentials never get committed.
+<sub>Estimated time converts counts to minutes: vocab 5s/card, grammar 5min/lesson, writing 25min/prompt.</sub>
 
-## The sheet it expects
+<!-- STATS:END -->
 
-A tab named **📅Daily Log** with these columns (header row 1):
+## What's tracked
 
-| Date | Listening (minutes) | Grammar (quizzes) | Vocab (Anki cards) | Reading (minutes) | Writing (Prompts) | Speaking (minutes) | Notes |
-|------|------|------|------|------|------|------|------|
+A daily row per skill, in whatever unit is natural for it: minutes for
+listening / reading / speaking, quizzes for grammar, cards for vocab, prompts for
+writing. Weekly objectives sit alongside so I can see where I'm keeping pace and
+where I'm slipping. The "estimated time on French" figure rolls the counts back
+into minutes with rough conversion rates so all six skills compare on one axis.
 
-Dates like `01 Jun 2026`. Blank cell = 0. Weeks start Monday.
+## How it's built
 
-Optional: a **🎯 Weekly Objectives** tab (`Week Starting` + one column per skill)
-unlocks the objective-attainment views. An **📈 Analytics** tab receives the
-`--push` summary.
+`analytics.py` pulls the sheet with [gspread](https://docs.gspread.org/) and does
+the maths (streaks, rolling trends, skill balance, objective attainment) in
+pandas. `dashboard.py` draws every chart as hand-written SVG — no chart library —
+and emits both a standalone `index.html` and the light/dark `.svg` files embedded
+above. A GitHub Actions workflow runs `build.py` on a schedule, commits the
+refreshed stats, and redeploys the dashboard to GitHub Pages.
 
-## Time-on-French estimate
-
-Count-based skills are converted to minute-equivalents so all six can be compared
-by time. Defaults (edit `EST_MIN_PER_UNIT` in `analytics.py`):
-
-| Skill | Assumption |
-|---|---|
-| Vocab | 5 seconds / card (≈ 25 min per 300 cards) |
-| Grammar | 5 minutes / lesson |
-| Writing | 25 minutes / prompt (drafting + review) |
-| Listening / Reading / Speaking | already minutes |
-
-## Project layout
-
-```
-analytics.py    data loading + all metric functions + text report + --push
-dashboard.py    renders dashboard.html from analytics.py (hand-built SVG, no deps)
-test_connection.py   minimal "can I reach the sheet" check
-requirements.txt
-.env.example
-```
-
-## Roadmap
-
-- [ ] Commit a rendered `dashboard.html` via GitHub Actions on a schedule
-- [ ] Publish it to GitHub Pages / embed on a personal site
-- [ ] Per-skill streak badges
+Want to run your own copy? See **[SETUP.md](SETUP.md)**.
 
 ## License
 

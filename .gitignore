@@ -6,8 +6,11 @@
 *.json
 
 # --- generated output ---
+# `python build.py` / CI writes public/ and deploys it to Pages; not committed.
+# (assets/*.svg ARE committed on purpose - the README embeds them.)
 dashboard.html
 *.local.html
+/public/
 
 # --- python ---
 __pycache__/
