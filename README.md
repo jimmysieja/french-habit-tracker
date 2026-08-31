@@ -6,18 +6,20 @@ below **every few hours**, so the numbers here are always current.
 
 <!-- STATS:START -->
 
-_Auto-updated 28 Aug 2026, 03:27 UTC — covering 01 Jun 2026 → 27 Aug 2026._
+_Auto-updated 31 Aug 2026, 01:09 UTC — covering 01 Jun 2026 → 28 Aug 2026._
 
-![streak](https://img.shields.io/badge/streak-11%20days-2a78d6) ![longest](https://img.shields.io/badge/longest-47%20days-1baf7a) ![time on French](https://img.shields.io/badge/time%20on%20French-91%20h-eb6834) ![days tracked](https://img.shields.io/badge/days%20tracked-88-8957e5) ![consistency](https://img.shields.io/badge/consistency-95%25-eda100)
+![streak](https://img.shields.io/badge/streak-12%20days-2a78d6) ![longest](https://img.shields.io/badge/longest-47%20days-1baf7a) ![time on French](https://img.shields.io/badge/time%20on%20French-92%20h-eb6834) ![days tracked](https://img.shields.io/badge/days%20tracked-89-8957e5) ![consistency](https://img.shields.io/badge/consistency-96%25-eda100)
+
+**[▶ Open the full interactive dashboard](https://jimmysieja.github.io/french-habit-tracker/)**
 
 ### At a glance
 
 | | |
 |--|--|
-| 🔥 Current streak | **11 days** (still going) |
+| 🔥 Current streak | **12 days** (still going) |
 | 🏆 Longest streak | **47 days** (01 Jun – 17 Jul) |
-| 📆 Active days | **84 / 88** (95%) |
-| ⏱ Estimated time on French | **~91 hours** (64 h logged directly) |
+| 📆 Active days | **85 / 89** (96%) |
+| ⏱ Estimated time on French | **~92 hours** (65 h logged directly) |
 
 ### 📅 Study calendar
 
@@ -30,12 +32,12 @@ _Auto-updated 28 Aug 2026, 03:27 UTC — covering 01 Jun 2026 → 27 Aug 2026._
 
 | Skill | Total | Est. time | Days practised | Weeks hit target |
 |-------|------:|----------:|---------------:|-----------------:|
-| Listening | 2,959 min | 49.3 h | 67 (76%) | 67% |
+| Listening | 3,000 min | 50.0 h | 68 (76%) | 75% |
 | Grammar | 197 quizzes | 16.4 h | 55 (62%) | 25% |
 | Vocab | 4,878 cards | 6.8 h | 45 (51%) | 33% |
 | Reading | 310 min | 5.2 h | 14 (16%) | 8% |
 | Writing | 10 prompts | 4.2 h | 7 (8%) | 17% |
-| Speaking | 545 min | 9.1 h | 22 (25%) | 42% |
+| Speaking | 595 min | 9.9 h | 23 (26%) | 50% |
 
 ### ⚖️ Where the time goes  ·  📆 By weekday
 
@@ -53,12 +55,12 @@ _Auto-updated 28 Aug 2026, 03:27 UTC — covering 01 Jun 2026 → 27 Aug 2026._
 
 | Skill | Last 7 days | vs. previous 7 |
 |-------|------------:|:--------------|
-| Listening | 290 min | ▲ +100% |
+| Listening | 289 min | ▲ +84% |
 | Grammar | 9 quizzes | — |
 | Vocab | 768 cards | ▲ +72% |
 | Reading | 0 min | — |
 | Writing | 1 prompts | ▼ -75% |
-| Speaking | 60 min | ▲ +0% |
+| Speaking | 110 min | ▲ +83% |
 
 <sub>Estimated time converts counts to minutes: vocab 5s/card, grammar 5min/lesson, writing 25min/prompt.</sub>
 
