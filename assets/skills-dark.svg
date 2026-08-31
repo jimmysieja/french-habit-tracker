@@ -1,28 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 224" width="100%" role="img" aria-label="Share of days each skill was practised"><style>
-.p-title{fill:#fff;font-size:12px;font-weight:600}
-.p-sub{fill:#898781;font-size:10px}
-.p-line{fill:none;stroke:#3987e5;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-.p-area{fill:#3987e5;opacity:.10}
-.p-end{fill:#3987e5;stroke:#1a1a19;stroke-width:2}
-.p-endlab{fill:#c3c2b7;font-size:10px;text-anchor:end;font-weight:600}
-.p-target{stroke:#898781;stroke-width:1;stroke-dasharray:0}
-.p-tlabel{fill:#898781;font-size:9px;text-anchor:end}
-.p-base{stroke:#383835;stroke-width:1}
-.b-bar{fill:#3987e5}
-.b-bar:hover{fill:#3987e5;opacity:.85}
-.b-hi{fill:#3987e5}
-.d-lab{fill:#898781;font-size:10px;text-anchor:middle}
-.d-val{fill:#c3c2b7;font-size:10px;text-anchor:middle;font-weight:600}
+.p-title{fill:#e9e9e9;font-size:12px;font-weight:600}
+.p-sub{fill:#858585;font-size:10px}
+.p-line{fill:none;stroke:#7aa6cf;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.p-area{fill:#7aa6cf;opacity:.10}
+.p-end{fill:#7aa6cf;stroke:#1d1f24;stroke-width:2}
+.p-endlab{fill:#b2b2b2;font-size:10px;text-anchor:end;font-weight:600}
+.p-target{stroke:#858585;stroke-width:1;stroke-dasharray:0}
+.p-tlabel{fill:#858585;font-size:9px;text-anchor:end}
+.p-base{stroke:#3a3d43;stroke-width:1}
+.b-bar{fill:#7aa6cf}
+.b-bar:hover{fill:#7aa6cf;opacity:.85}
+.b-hi{fill:#7aa6cf}
+.d-lab{fill:#858585;font-size:10px;text-anchor:middle}
+.d-val{fill:#b2b2b2;font-size:10px;text-anchor:middle;font-weight:600}
 /* heatmap */
-.hm-mon{fill:#898781;font-size:10px}
-.hm-dow{fill:#898781;font-size:9px;text-anchor:end}
+.hm-mon{fill:#858585;font-size:10px}
+.hm-dow{fill:#858585;font-size:9px;text-anchor:end}
 rect:hover{opacity:.8}
 /* horizontal bars */
-.h-cat{fill:#fff;font-size:12px;text-anchor:end;dominant-baseline:middle}
-.h-track{fill:#2c2c2a}
-.h-fill{fill:#3987e5}
-.h-val{fill:#c3c2b7;font-size:11px;font-weight:600;dominant-baseline:middle}
-.h-obj{stroke:#fff;stroke-width:2}
-.ts-lab{fill:#fff;font-size:11px;font-weight:600}
-.ts-val{fill:#c3c2b7;font-size:11px}
-</style><text class="h-cat" x="86" y="27">Writing</text><rect class="h-track" x="96" y="14" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="14" width="31.8" height="18" rx="4"><title>Writing: practised on 8% of days</title></rect><text class="h-val" x="133.8" y="27">8%</text><line class="h-obj" x1="286.8" y1="11" x2="286.8" y2="35"><title>avg 47% of weekly objective</title></line><text class="h-cat" x="86" y="61">Reading</text><rect class="h-track" x="96" y="48" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="48" width="63.6" height="18" rx="4"><title>Reading: practised on 16% of days</title></rect><text class="h-val" x="165.6" y="61">16%</text><line class="h-obj" x1="314.8" y1="45" x2="314.8" y2="69"><title>avg 54% of weekly objective</title></line><text class="h-cat" x="86" y="95">Speaking</text><rect class="h-track" x="96" y="82" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="82" width="104.4" height="18" rx="4"><title>Speaking: practised on 26% of days</title></rect><text class="h-val" x="206.4" y="95">26%</text><line class="h-obj" x1="500.0" y1="79" x2="500.0" y2="103"><title>avg 124% of weekly objective</title></line><text class="h-cat" x="86" y="129">Vocab</text><rect class="h-track" x="96" y="116" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="116" width="204.3" height="18" rx="4"><title>Vocab: practised on 51% of days</title></rect><text class="h-val" x="306.3" y="129">51%</text><line class="h-obj" x1="431.7" y1="113" x2="431.7" y2="137"><title>avg 83% of weekly objective</title></line><text class="h-cat" x="86" y="163">Grammar</text><rect class="h-track" x="96" y="150" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="150" width="249.7" height="18" rx="4"><title>Grammar: practised on 62% of days</title></rect><text class="h-val" x="351.7" y="163">62%</text><line class="h-obj" x1="354.8" y1="147" x2="354.8" y2="171"><title>avg 64% of weekly objective</title></line><text class="h-cat" x="86" y="197">Listening</text><rect class="h-track" x="96" y="184" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="184" width="308.7" height="18" rx="4"><title>Listening: practised on 76% of days</title></rect><text class="h-val" x="410.7" y="197">76%</text><line class="h-obj" x1="500.0" y1="181" x2="500.0" y2="205"><title>avg 148% of weekly objective</title></line></svg>
+.h-cat{fill:#e9e9e9;font-size:12px;text-anchor:end;dominant-baseline:middle}
+.h-track{fill:#2b2d33}
+.h-fill{fill:#7aa6cf}
+.h-val{fill:#b2b2b2;font-size:11px;font-weight:600;dominant-baseline:middle}
+.h-obj{stroke:#e9e9e9;stroke-width:2}
+.ts-lab{fill:#e9e9e9;font-size:11px;font-weight:600}
+.ts-val{fill:#b2b2b2;font-size:11px}
+</style><rect x="0" y="0" width="100%" height="100%" fill="#1d1f24"/><text class="h-cat" x="86" y="27">Writing</text><rect class="h-track" x="96" y="14" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="14" width="31.8" height="18" rx="4"><title>Writing: practised on 8% of days</title></rect><text class="h-val" x="133.8" y="27">8%</text><line class="h-obj" x1="286.8" y1="11" x2="286.8" y2="35"><title>avg 47% of weekly objective</title></line><text class="h-cat" x="86" y="61">Reading</text><rect class="h-track" x="96" y="48" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="48" width="63.6" height="18" rx="4"><title>Reading: practised on 16% of days</title></rect><text class="h-val" x="165.6" y="61">16%</text><line class="h-obj" x1="314.8" y1="45" x2="314.8" y2="69"><title>avg 54% of weekly objective</title></line><text class="h-cat" x="86" y="95">Speaking</text><rect class="h-track" x="96" y="82" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="82" width="104.4" height="18" rx="4"><title>Speaking: practised on 26% of days</title></rect><text class="h-val" x="206.4" y="95">26%</text><line class="h-obj" x1="500.0" y1="79" x2="500.0" y2="103"><title>avg 124% of weekly objective</title></line><text class="h-cat" x="86" y="129">Vocab</text><rect class="h-track" x="96" y="116" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="116" width="204.3" height="18" rx="4"><title>Vocab: practised on 51% of days</title></rect><text class="h-val" x="306.3" y="129">51%</text><line class="h-obj" x1="431.7" y1="113" x2="431.7" y2="137"><title>avg 83% of weekly objective</title></line><text class="h-cat" x="86" y="163">Grammar</text><rect class="h-track" x="96" y="150" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="150" width="249.7" height="18" rx="4"><title>Grammar: practised on 62% of days</title></rect><text class="h-val" x="351.7" y="163">62%</text><line class="h-obj" x1="354.8" y1="147" x2="354.8" y2="171"><title>avg 64% of weekly objective</title></line><text class="h-cat" x="86" y="197">Listening</text><rect class="h-track" x="96" y="184" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="184" width="308.7" height="18" rx="4"><title>Listening: practised on 76% of days</title></rect><text class="h-val" x="410.7" y="197">76%</text><line class="h-obj" x1="500.0" y1="181" x2="500.0" y2="205"><title>avg 148% of weekly objective</title></line></svg>

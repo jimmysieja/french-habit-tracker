@@ -66,7 +66,8 @@ python build.py               # everything CI does: public/index.html + assets/ 
    - `FR_SERVICE_ACCOUNT_JSON` — paste the *entire contents* of your JSON key file
    - `FR_SHEET_KEY` — your sheet id
 2. **Repo → Settings → Pages → Build and deployment → Source: GitHub Actions.**
-3. The workflow in `.github/workflows/dashboard.yml` runs every 6 hours (and on
+3. **Repo → Settings → Actions → General → Workflow permissions → Read and write.**
+4. The workflow in `.github/workflows/dashboard.yml` runs once a day (and on
    demand from the Actions tab). It rebuilds `public/index.html`, refreshes the
    README stats and `assets/*.svg`, commits any change, and deploys Pages.
 

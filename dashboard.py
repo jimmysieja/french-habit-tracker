@@ -250,9 +250,13 @@ def balance_svg(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
 # --------------------------------------------------------------------------- #
 # 5. where the time goes - stacked bar of estimated minutes, all six skills
 # --------------------------------------------------------------------------- #
-SLOT = {  # fixed categorical hue per skill (dataviz reference order 1..6)
-    "Listening": "--series-1", "Grammar": "--series-2", "Vocab": "--series-3",
-    "Reading": "--series-4", "Writing": "--series-5", "Speaking": "--series-6",
+SLOT = {  # hue per skill, ordered so lookalike pastels never sit side by side
+    "Listening": "--series-1",  # blue
+    "Grammar": "--series-4",    # gold
+    "Vocab": "--series-6",      # teal
+    "Reading": "--series-2",    # rose
+    "Writing": "--series-5",    # purple
+    "Speaking": "--series-3",   # green
 }
 
 
@@ -318,23 +322,124 @@ def dow_svg(df: pd.DataFrame) -> str:
 
 
 # --------------------------------------------------------------------------- #
+# 7. combined 6-panel grids (one <svg>) - used for the README, where each
+#    chart has to be a single embeddable image
+# --------------------------------------------------------------------------- #
+_PW, _PH, _PGAP = 250, 118, 14          # panel box + gap
+_PCOLS = 3
+
+
+def _grid_shell(n: int, label: str):
+    rows = (n + _PCOLS - 1) // _PCOLS
+    w = _PCOLS * _PW + (_PCOLS - 1) * _PGAP
+    h = rows * _PH + (rows - 1) * _PGAP
+    head = (f'<svg viewBox="0 0 {w} {h}" width="100%" role="img" '
+            f'aria-label="{esc(label)}">')
+    def origin(i):
+        return (i % _PCOLS) * (_PW + _PGAP), (i // _PCOLS) * (_PH + _PGAP)
+    return head, origin, w, h
+
+
+def _line_panel(ox, oy, title, sub, series, target=None):
+    ml, mr, mt, mb = 6, 6, 30, 12
+    n = len(series)
+    ymax = (max(float(series.max()), target or 0) * 1.15) or 1
+    xs = lambda i: ox + ml + (_PW - ml - mr) * (i / (n - 1) if n > 1 else 0)
+    ys = lambda v: oy + _PH - mb - (_PH - mt - mb) * (v / ymax)
+    pts = " ".join(f"{xs(i):.1f},{ys(v):.1f}" for i, v in enumerate(series))
+    area = f"{ox+ml},{ys(0):.1f} {pts} {xs(n-1):.1f},{ys(0):.1f}"
+    ex, ey = xs(n - 1), ys(series[-1])
+    return (
+        f'<text class="p-title" x="{ox+ml}" y="{oy+13}">{esc(title)}</text>'
+        f'<text class="p-sub" x="{ox+ml}" y="{oy+25}">{esc(sub)}</text>'
+        f'<polygon class="p-area" points="{area}"/>'
+        f'<polyline class="p-line" points="{pts}"/>'
+        f'<circle class="p-end" cx="{ex:.1f}" cy="{ey:.1f}" r="3"/>'
+    )
+
+
+def _col_panel(ox, oy, title, sub, vals, target=None):
+    ml, mr, mt, mb = 6, 6, 30, 12
+    n = len(vals)
+    ymax = (max(float(vals.max()), target or 0) * 1.15) or 1
+    slot = (_PW - ml - mr) / n
+    bw = min(14, slot - 2)
+    y0 = oy + _PH - mb
+    ys = lambda v: y0 - (_PH - mt - mb) * (v / ymax)
+    bars = "".join(
+        f'<rect class="b-bar" x="{ox+ml+i*slot+(slot-bw)/2:.1f}" y="{ys(v):.1f}" '
+        f'width="{bw:.1f}" height="{max(0, y0-ys(v)):.1f}" rx="2"/>'
+        for i, v in enumerate(vals)
+    )
+    tline = ""
+    if target:
+        ty = ys(target)
+        tline = (f'<line class="p-target" x1="{ox+ml}" y1="{ty:.1f}" '
+                 f'x2="{ox+_PW-mr}" y2="{ty:.1f}"/>')
+    return (
+        f'<text class="p-title" x="{ox+ml}" y="{oy+13}">{esc(title)}</text>'
+        f'<text class="p-sub" x="{ox+ml}" y="{oy+25}">{esc(sub)}</text>'
+        f'<line class="p-base" x1="{ox+ml}" y1="{y0}" x2="{ox+_PW-mr}" y2="{y0}"/>'
+        f'{bars}{tline}'
+    )
+
+
+def trend_grid_svg(df: pd.DataFrame) -> str:
+    roll = df[SKILLS].rolling(7, min_periods=3).mean().bfill()
+    tr = A.trend_slopes(df)
+    head, origin, *_ = _grid_shell(len(SKILLS), "7-day rolling average per skill")
+    body = []
+    for i, s in enumerate(SKILLS):
+        r = tr.loc[s]
+        arrow = "up" if r["slope_per_week"] > 0.05 else "down" if r["slope_per_week"] < -0.05 else "flat"
+        sub = f'{fmt(r["first_week_avg"],1)} -> {fmt(r["last_week_avg"],1)} {UNIT[s]}/day ({arrow})'
+        ox, oy = origin(i)
+        body.append(_line_panel(ox, oy, s, sub, roll[s].to_numpy()))
+    return head + "".join(body) + "</svg>"
+
+
+def objective_grid_svg(df: pd.DataFrame, obj: "pd.DataFrame | None") -> str:
+    wk = A.weekly(df)
+    common = wk.index if obj is None else wk.index.intersection(obj.index)
+    wk = wk.loc[common]
+    head, origin, *_ = _grid_shell(len(SKILLS), "Weekly totals against objective")
+    body = []
+    for i, s in enumerate(SKILLS):
+        vals = wk[s].to_numpy(dtype=float)
+        tgt = None
+        sub = f"weekly {UNIT[s]}"
+        if obj is not None and s in obj:
+            tg = obj.loc[common, s].replace(0, np.nan)
+            if tg.notna().any():
+                tgt = float(np.nanmedian(tg))
+                hit = float((wk[s] >= tg).mean() * 100)
+                sub = f"weekly {UNIT[s]} · {hit:.0f}% of weeks on target"
+        ox, oy = origin(i)
+        body.append(_col_panel(ox, oy, s, sub, vals, tgt))
+    return head + "".join(body) + "</svg>"
+
+
+# --------------------------------------------------------------------------- #
 # assemble page
 # --------------------------------------------------------------------------- #
+# Muted / pastel palette. Soft on purpose - the categorical hues sit below the
+# usual saturation bar, so every multi-colour chart (only the time-split bar)
+# carries a legend + direct labels; the rest are single-series or the heat ramp.
 _TOK_LIGHT = (
-    "--plane:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;"
-    "--grid:#e1e0d9;--base:#c3c2b7;--border:rgba(11,11,11,.10);"
-    "--series-1:#2a78d6;--series-2:#eb6834;--series-3:#1baf7a;"
-    "--series-4:#eda100;--series-5:#e87ba4;--series-6:#008300;"
-    "--accent:#2a78d6;--good:#006300;"
-    "--heat-0:#ecebe4;--heat-1:#cde2fb;--heat-2:#9ec5f4;--heat-3:#5598e7;--heat-4:#184f95;"
+    "--plane:#faf9f6;--surface:#ffffff;--ink:#2c2c2c;--ink2:#606060;--muted:#9b9b9b;"
+    "--grid:#eae7e1;--base:#d1cdc6;--border:rgba(20,20,20,.10);"
+    "--series-1:#5a8fbf;--series-2:#cf8686;--series-3:#5faa82;"
+    "--series-4:#c99a4a;--series-5:#927fbc;--series-6:#4ea3a3;"
+    "--accent:#5a8fbf;--good:#5a8fbf;"
+    "--heat-0:#edeae4;--heat-1:#d8e5f0;--heat-2:#aecbe4;--heat-3:#7ea9cd;--heat-4:#4f7ba6;"
 )
 _TOK_DARK = (
-    "--plane:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;"
-    "--grid:#2c2c2a;--base:#383835;--border:rgba(255,255,255,.10);"
-    "--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70;"
-    "--series-4:#c98500;--series-5:#d55181;--series-6:#008300;"
-    "--accent:#3987e5;--good:#0ca30c;"
-    "--heat-0:#232320;--heat-1:#16324f;--heat-2:#1c5cab;--heat-3:#3987e5;--heat-4:#9ec5f4;"
+    "--plane:#14151a;--surface:#1d1f24;--ink:#e9e9e9;--ink2:#b2b2b2;--muted:#858585;"
+    "--grid:#2b2d33;--base:#3a3d43;--border:rgba(255,255,255,.10);"
+    "--series-1:#7aa6cf;--series-2:#dc9d9d;--series-3:#7cc09a;"
+    "--series-4:#d6b46a;--series-5:#a998d0;--series-6:#6bb8b8;"
+    "--accent:#7aa6cf;--good:#7aa6cf;"
+    "--heat-0:#23252b;--heat-1:#2b4257;--heat-2:#3d6688;--heat-3:#5f92b6;--heat-4:#9ac2e0;"
 )
 
 # rules that style the hand-built SVG marks - shared by the page and by the
@@ -374,14 +479,16 @@ _LAYOUT_CSS = """
 body{margin:0;background:var(--plane);color:var(--ink);
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;
   -webkit-font-smoothing:antialiased}
-.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 72px}
-header h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
-header p{margin:0;color:var(--ink2);font-size:14px}
-header a{color:var(--accent);text-decoration:none}
-section{margin-top:40px}
-h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+.wrap{max-width:1060px;margin:0 auto;padding:56px 24px 80px}
+header{border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:8px}
+header h1{font-size:22px;margin:0 0 6px;letter-spacing:-.01em;font-weight:600}
+header p{margin:0;color:var(--muted);font-size:13px}
+header a{color:var(--ink2);text-decoration:none;border-bottom:1px solid var(--border)}
+section{margin-top:44px}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);
   margin:0 0 14px;font-weight:600}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
+.cap{font-size:11px;color:var(--muted);margin:10px 0 0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
 .tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px}
 .tile .lab{font-size:12px;color:var(--ink2);margin-bottom:6px}
@@ -435,10 +542,13 @@ def standalone_svg(body: str, theme: str = "light") -> str:
 
     pal = _token_map(_TOK_LIGHT if theme == "light" else _TOK_DARK)
     sub = lambda text: re.sub(r"var\((--[\w-]+)\)", lambda m: pal.get(m.group(1), m.group(0)), text)
+    # a surface-coloured backdrop so the file is readable on any page, not just
+    # the matching GitHub theme
+    bg = f'<rect x="0" y="0" width="100%" height="100%" fill="{pal["--surface"]}"/>'
     style = f"<style>{sub(CHART_CSS)}</style>"
     body = sub(body).replace("<svg ", '<svg xmlns="http://www.w3.org/2000/svg" ', 1)
     cut = body.index(">") + 1
-    return body[:cut] + style + body[cut:]
+    return body[:cut] + style + bg + body[cut:]
 
 
 def export_assets(df: pd.DataFrame, obj: "pd.DataFrame | None", outdir="assets") -> list[Path]:
@@ -450,6 +560,8 @@ def export_assets(df: pd.DataFrame, obj: "pd.DataFrame | None", outdir="assets")
         "skills": balance_svg(df, obj),
         "time-split": timesplit_svg(df),
         "weekday": dow_svg(df),
+        "trend": trend_grid_svg(df),
+        "objectives": objective_grid_svg(df, obj),
     }
     written = []
     for name, svg in charts.items():
@@ -511,11 +623,11 @@ def page_body(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
     week_est_min = float(A.estimated_minutes(df).iloc[-7:].sum().sum())
 
     tiles = [
-        ("hero", "Current streak", f'{s["current"]}', "days in a row" + (" · live" if s["current_live"] else " · ended")),
-        ("", "Longest streak", f"{longest}", f'{s["longest"][0]:%d %b} – {s["longest"][1]:%d %b}' if s["longest"] else ""),
-        ("", "Consistency", f'{s["consistency_pct"]:.0f}%', f'{s["active_days"]} of {s["tracked_days"]} days active'),
-        ("", "Est. time on French", f"{est_hours:.0f}h", f"{total_hours:.0f}h logged directly + converted counts"),
-        ("", "Last 7 days", f"{week_est_min/60:.1f}h", "estimated study time"),
+        ("hero", "Current streak", f'{s["current"]}', "days" + ("" if s["current_live"] else " · ended")),
+        ("", "Longest streak", f"{longest}", "days"),
+        ("", "Consistency", f'{s["consistency_pct"]:.0f}%', f'{s["active_days"]} of {s["tracked_days"]} days'),
+        ("", "Total time", f"{est_hours:.0f}h", f"{total_hours:.0f}h logged · rest estimated"),
+        ("", "Last 7 days", f"{week_est_min/60:.1f}h", "estimated"),
     ]
     tile_html = "".join(
         f'<div class="tile {c}"><div class="lab">{esc(l)}</div>'
@@ -545,66 +657,64 @@ def page_body(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
 
     stamp = dt.datetime.now(dt.timezone.utc).strftime("%d %b %Y, %H:%M UTC")
     repo = os.environ.get("REPO_URL", "").rstrip("/")
-    repo_link = f' · <a href="{repo}">source</a>' if repo else ""
-    return f"""<title>French Study Dashboard</title><style>{CSS}</style>
+    foot_src = f' · <a href="{repo}">source</a>' if repo else ""
+    return f"""<title>Jimmy's French Habit Tracker</title><style>{CSS}</style>
 <div class="wrap">
 <header>
-  <h1>🇫🇷 Learning French, tracked daily</h1>
-  <p>{start:%d %b %Y} – {end:%d %b %Y} · {len(df)} days · rebuilt {stamp}{repo_link}</p>
+  <h1>Jimmy's French Habit Tracker</h1>
+  <p>{start:%d %b %Y} – {end:%d %b %Y} · {len(df)} days tracked · rebuilt {stamp}</p>
 </header>
 
 <section><div class="tiles">{tile_html}</div></section>
 
 <section>
   <h2>Study calendar</h2>
-  <div class="card">{heatmap_svg(df)}</div>
+  <div class="card">{heatmap_svg(df)}
+  <p class="cap">Shaded by estimated minutes studied. Hover a day for the breakdown.</p></div>
 </section>
 
 <section>
-  <h2>Momentum · last 7 days</h2>
+  <h2>Last 7 days</h2>
   {momentum_block(df)}
 </section>
 
 <section>
-  <h2>Trend · 7-day rolling average per skill</h2>
+  <h2>Trend — 7-day rolling average per skill</h2>
   {trend_panels(df)}
 </section>
 
 <section>
-  <h2>Weekly totals vs. objective</h2>
+  <h2>Weekly totals against objective</h2>
   {weekly_panels(df, obj)}
 </section>
 
 <section>
-  <h2>Skill balance · share of days practised</h2>
+  <h2>Skill balance — share of days practised</h2>
   <div class="card">{balance_svg(df, obj)}
-  <p style="font-size:11px;color:var(--muted);margin:8px 0 0">
-  Vertical tick = average weekly-objective attainment for that skill.</p></div>
+  <p class="cap">Vertical tick = average weekly-objective attainment for that skill.</p></div>
 </section>
 
 <section>
-  <h2>Where your time goes · estimated</h2>
+  <h2>Where the time goes</h2>
   <div class="card">{timesplit_svg(df)}
-  <p style="font-size:11px;color:var(--muted);margin:10px 0 0">
-  Counts converted to minutes: vocab {A.EST_MIN_PER_UNIT['Vocab']*60:.0f}s/card ·
+  <p class="cap">Counts converted to minutes: vocab {A.EST_MIN_PER_UNIT['Vocab']*60:.0f}s/card ·
   grammar {A.EST_MIN_PER_UNIT['Grammar']:.0f}min/lesson ·
-  writing {A.EST_MIN_PER_UNIT['Writing']:.0f}min/prompt.
-  Edit <code>EST_MIN_PER_UNIT</code> in analytics.py to retune.</p></div>
+  writing {A.EST_MIN_PER_UNIT['Writing']:.0f}min/prompt.</p></div>
 </section>
 
 <section>
-  <h2>Day-of-week pattern · average minutes</h2>
+  <h2>Average minutes by day of week</h2>
   <div class="card">{dow_svg(df)}</div>
 </section>
 
-<details><summary>Show the numbers</summary>
+<details><summary>All the numbers</summary>
   <h2 style="margin-top:20px">All-time totals</h2>
   {totals_table}
   <h2 style="margin-top:24px">Weekly totals</h2>
   {weekly_table(df, obj)}
 </details>
 
-<p class="foot">Built from a Google Sheet with pandas + hand-drawn SVG · rebuilt automatically by GitHub Actions{repo_link}</p>
+<p class="foot">Built from a Google Sheet with pandas and hand-drawn SVG · rebuilt daily by GitHub Actions{foot_src}</p>
 </div>"""
 
 

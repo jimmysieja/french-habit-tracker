@@ -1,68 +1,88 @@
-# 🇫🇷 Learning French, in public
+# Jimmy's French Habit Tracker
 
 I log every French study session — listening, grammar, vocab, reading, writing,
 speaking — in a Google Sheet. This repo reads that sheet and rebuilds the stats
-below **every few hours**, so the numbers here are always current.
+below once a day, so the numbers stay current.
+
+[**Live dashboard**](https://jimmysieja.github.io/french-habit-tracker/) — the
+same data, interactive.
 
 <!-- STATS:START -->
 
-_Auto-updated 31 Aug 2026, 01:09 UTC — covering 01 Jun 2026 → 28 Aug 2026._
+<sub>Updated 31 Aug 2026, 01:24 UTC &nbsp;·&nbsp; 89 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 28 Aug 2026</sub>
 
-![streak](https://img.shields.io/badge/streak-12%20days-2a78d6) ![longest](https://img.shields.io/badge/longest-47%20days-1baf7a) ![time on French](https://img.shields.io/badge/time%20on%20French-92%20h-eb6834) ![days tracked](https://img.shields.io/badge/days%20tracked-89-8957e5) ![consistency](https://img.shields.io/badge/consistency-96%25-eda100)
+| Current streak | Longest streak | Consistency | Total time |
+|:-:|:-:|:-:|:-:|
+| **12** days | **47** days | **96%** | **92** h |
 
-**[▶ Open the full interactive dashboard](https://jimmysieja.github.io/french-habit-tracker/)**
-
-### At a glance
-
-| | |
-|--|--|
-| 🔥 Current streak | **12 days** (still going) |
-| 🏆 Longest streak | **47 days** (01 Jun – 17 Jul) |
-| 📆 Active days | **85 / 89** (96%) |
-| ⏱ Estimated time on French | **~92 hours** (65 h logged directly) |
-
-### 📅 Study calendar
+## Study calendar
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/calendar-dark.svg">
   <img alt="Daily study calendar, shaded by minutes studied" src="assets/calendar-light.svg" width="100%">
 </picture>
+<sub>Darker = more time that day. Hover any day on the [live dashboard](https://jimmysieja.github.io/french-habit-tracker/) for the per-skill breakdown.</sub>
 
-### 📊 By skill
+## By skill
 
-| Skill | Total | Est. time | Days practised | Weeks hit target |
-|-------|------:|----------:|---------------:|-----------------:|
+| Skill | Total | Time | Days practised | Weeks on target |
+|:--|--:|--:|--:|--:|
 | Listening | 3,000 min | 50.0 h | 68 (76%) | 75% |
 | Grammar | 197 quizzes | 16.4 h | 55 (62%) | 25% |
 | Vocab | 4,878 cards | 6.8 h | 45 (51%) | 33% |
 | Reading | 310 min | 5.2 h | 14 (16%) | 8% |
 | Writing | 10 prompts | 4.2 h | 7 (8%) | 17% |
 | Speaking | 595 min | 9.9 h | 23 (26%) | 50% |
+| **Total** | | **92 h** | | |
 
-### ⚖️ Where the time goes  ·  📆 By weekday
+## 7-day rolling trend
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/trend-dark.svg">
+  <img alt="Seven-day rolling average per skill, whole period" src="assets/trend-light.svg" width="100%">
+</picture>
+
+## Weekly totals against objective
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/objectives-dark.svg">
+  <img alt="Weekly totals per skill with the objective line" src="assets/objectives-light.svg" width="100%">
+</picture>
+
+## Skill balance
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/skills-dark.svg">
+  <img alt="Share of days each skill was practised" src="assets/skills-light.svg" width="100%">
+</picture>
+<sub>Bar = share of days practised. Tick = average weekly-objective attainment.</sub>
+
+## Where the time goes
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/time-split-dark.svg">
   <img alt="Share of estimated study time by skill" src="assets/time-split-light.svg" width="100%">
 </picture>
 
+## Average minutes by day of week
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/weekday-dark.svg">
   <img alt="Average minutes studied by day of week" src="assets/weekday-light.svg" width="100%">
 </picture>
 
-### 🚀 Last 7 days
+## Last 7 days
 
 | Skill | Last 7 days | vs. previous 7 |
-|-------|------------:|:--------------|
-| Listening | 289 min | ▲ +84% |
+|:--|--:|:--|
+| Listening | 289 min | +84% |
 | Grammar | 9 quizzes | — |
-| Vocab | 768 cards | ▲ +72% |
+| Vocab | 768 cards | +72% |
 | Reading | 0 min | — |
-| Writing | 1 prompts | ▼ -75% |
-| Speaking | 110 min | ▲ +83% |
+| Writing | 1 prompts | -75% |
+| Speaking | 110 min | +83% |
 
-<sub>Estimated time converts counts to minutes: vocab 5s/card, grammar 5min/lesson, writing 25min/prompt.</sub>
+<sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 25min/prompt. 65 h of that is logged directly.</sub>
 
 <!-- STATS:END -->
 

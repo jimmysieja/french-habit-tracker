@@ -1,28 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 176" width="100%" role="img" aria-label="Average minutes practised by day of week"><style>
-.p-title{fill:#0b0b0b;font-size:12px;font-weight:600}
-.p-sub{fill:#898781;font-size:10px}
-.p-line{fill:none;stroke:#2a78d6;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-.p-area{fill:#2a78d6;opacity:.10}
-.p-end{fill:#2a78d6;stroke:#fcfcfb;stroke-width:2}
-.p-endlab{fill:#52514e;font-size:10px;text-anchor:end;font-weight:600}
-.p-target{stroke:#898781;stroke-width:1;stroke-dasharray:0}
-.p-tlabel{fill:#898781;font-size:9px;text-anchor:end}
-.p-base{stroke:#c3c2b7;stroke-width:1}
-.b-bar{fill:#2a78d6}
-.b-bar:hover{fill:#2a78d6;opacity:.85}
-.b-hi{fill:#2a78d6}
-.d-lab{fill:#898781;font-size:10px;text-anchor:middle}
-.d-val{fill:#52514e;font-size:10px;text-anchor:middle;font-weight:600}
+.p-title{fill:#2c2c2c;font-size:12px;font-weight:600}
+.p-sub{fill:#9b9b9b;font-size:10px}
+.p-line{fill:none;stroke:#5a8fbf;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.p-area{fill:#5a8fbf;opacity:.10}
+.p-end{fill:#5a8fbf;stroke:#ffffff;stroke-width:2}
+.p-endlab{fill:#606060;font-size:10px;text-anchor:end;font-weight:600}
+.p-target{stroke:#9b9b9b;stroke-width:1;stroke-dasharray:0}
+.p-tlabel{fill:#9b9b9b;font-size:9px;text-anchor:end}
+.p-base{stroke:#d1cdc6;stroke-width:1}
+.b-bar{fill:#5a8fbf}
+.b-bar:hover{fill:#5a8fbf;opacity:.85}
+.b-hi{fill:#5a8fbf}
+.d-lab{fill:#9b9b9b;font-size:10px;text-anchor:middle}
+.d-val{fill:#606060;font-size:10px;text-anchor:middle;font-weight:600}
 /* heatmap */
-.hm-mon{fill:#898781;font-size:10px}
-.hm-dow{fill:#898781;font-size:9px;text-anchor:end}
+.hm-mon{fill:#9b9b9b;font-size:10px}
+.hm-dow{fill:#9b9b9b;font-size:9px;text-anchor:end}
 rect:hover{opacity:.8}
 /* horizontal bars */
-.h-cat{fill:#0b0b0b;font-size:12px;text-anchor:end;dominant-baseline:middle}
-.h-track{fill:#e1e0d9}
-.h-fill{fill:#2a78d6}
-.h-val{fill:#52514e;font-size:11px;font-weight:600;dominant-baseline:middle}
-.h-obj{stroke:#0b0b0b;stroke-width:2}
-.ts-lab{fill:#0b0b0b;font-size:11px;font-weight:600}
-.ts-val{fill:#52514e;font-size:11px}
-</style><line class="p-base" x1="8" y1="152" x2="552" y2="152"/><rect class="b-bar" x="31.9" y="108.7" width="30.0" height="43.3" rx="3"><title>Monday: 37 min/day avg</title></rect><text class="d-lab" x="46.9" y="167">Mon</text><text class="d-val" x="46.9" y="102.7">37</text><rect class="b-bar" x="109.6" y="47.0" width="30.0" height="105.0" rx="3"><title>Tuesday: 89 min/day avg</title></rect><text class="d-lab" x="124.6" y="167">Tue</text><text class="d-val" x="124.6" y="41.0">89</text><rect class="b-bar" x="187.3" y="83.9" width="30.0" height="68.1" rx="3"><title>Wednesday: 58 min/day avg</title></rect><text class="d-lab" x="202.3" y="167">Wed</text><text class="d-val" x="202.3" y="77.9">58</text><rect class="b-bar" x="265.0" y="95.7" width="30.0" height="56.3" rx="3"><title>Thursday: 48 min/day avg</title></rect><text class="d-lab" x="280.0" y="167">Thu</text><text class="d-val" x="280.0" y="89.7">48</text><rect class="b-bar" x="342.7" y="121.9" width="30.0" height="30.1" rx="3"><title>Friday: 26 min/day avg</title></rect><text class="d-lab" x="357.7" y="167">Fri</text><text class="d-val" x="357.7" y="115.9">26</text><rect class="b-bar" x="420.4" y="129.4" width="30.0" height="22.6" rx="3"><title>Saturday: 19 min/day avg</title></rect><text class="d-lab" x="435.4" y="167">Sat</text><text class="d-val" x="435.4" y="123.4">19</text><rect class="b-bar" x="498.1" y="120.2" width="30.0" height="31.8" rx="3"><title>Sunday: 27 min/day avg</title></rect><text class="d-lab" x="513.1" y="167">Sun</text><text class="d-val" x="513.1" y="114.2">27</text></svg>
+.h-cat{fill:#2c2c2c;font-size:12px;text-anchor:end;dominant-baseline:middle}
+.h-track{fill:#eae7e1}
+.h-fill{fill:#5a8fbf}
+.h-val{fill:#606060;font-size:11px;font-weight:600;dominant-baseline:middle}
+.h-obj{stroke:#2c2c2c;stroke-width:2}
+.ts-lab{fill:#2c2c2c;font-size:11px;font-weight:600}
+.ts-val{fill:#606060;font-size:11px}
+</style><rect x="0" y="0" width="100%" height="100%" fill="#ffffff"/><line class="p-base" x1="8" y1="152" x2="552" y2="152"/><rect class="b-bar" x="31.9" y="108.7" width="30.0" height="43.3" rx="3"><title>Monday: 37 min/day avg</title></rect><text class="d-lab" x="46.9" y="167">Mon</text><text class="d-val" x="46.9" y="102.7">37</text><rect class="b-bar" x="109.6" y="47.0" width="30.0" height="105.0" rx="3"><title>Tuesday: 89 min/day avg</title></rect><text class="d-lab" x="124.6" y="167">Tue</text><text class="d-val" x="124.6" y="41.0">89</text><rect class="b-bar" x="187.3" y="83.9" width="30.0" height="68.1" rx="3"><title>Wednesday: 58 min/day avg</title></rect><text class="d-lab" x="202.3" y="167">Wed</text><text class="d-val" x="202.3" y="77.9">58</text><rect class="b-bar" x="265.0" y="95.7" width="30.0" height="56.3" rx="3"><title>Thursday: 48 min/day avg</title></rect><text class="d-lab" x="280.0" y="167">Thu</text><text class="d-val" x="280.0" y="89.7">48</text><rect class="b-bar" x="342.7" y="121.9" width="30.0" height="30.1" rx="3"><title>Friday: 26 min/day avg</title></rect><text class="d-lab" x="357.7" y="167">Fri</text><text class="d-val" x="357.7" y="115.9">26</text><rect class="b-bar" x="420.4" y="129.4" width="30.0" height="22.6" rx="3"><title>Saturday: 19 min/day avg</title></rect><text class="d-lab" x="435.4" y="167">Sat</text><text class="d-val" x="435.4" y="123.4">19</text><rect class="b-bar" x="498.1" y="120.2" width="30.0" height="31.8" rx="3"><title>Sunday: 27 min/day avg</title></rect><text class="d-lab" x="513.1" y="167">Sun</text><text class="d-val" x="513.1" y="114.2">27</text></svg>
