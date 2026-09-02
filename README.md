@@ -9,11 +9,11 @@ same data, interactive.
 
 <!-- STATS:START -->
 
-<sub>Updated 02 Sep 2026, 04:07 UTC &nbsp;·&nbsp; 93 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 01 Sep 2026</sub>
+<sub>Updated 02 Sep 2026, 08:49 UTC &nbsp;·&nbsp; 93 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 01 Sep 2026</sub>
 
 | Current streak | Longest streak | Consistency | Total time |
 |:-:|:-:|:-:|:-:|
-| **16** days | **47** days | **96%** | **97** h |
+| **16** days | **47** days | **96%** | **98** h |
 
 ## Study calendar
 
@@ -29,11 +29,11 @@ same data, interactive.
 |:--|--:|--:|--:|--:|
 | Listening | 3,107 min | 51.8 h | 71 (76%) | 75% |
 | Grammar | 207 quizzes | 17.2 h | 57 (61%) | 25% |
-| Vocab | 5,247 cards | 7.3 h | 49 (53%) | 33% |
+| Vocab | 5,377 cards | 7.5 h | 49 (53%) | 33% |
 | Reading | 355 min | 5.9 h | 15 (16%) | 8% |
 | Writing | 11 prompts | 4.6 h | 8 (9%) | 17% |
 | Speaking | 630 min | 10.5 h | 25 (27%) | 50% |
-| **Total** | | **97 h** | | |
+| **Total** | | **98 h** | | |
 
 ## 7-day rolling trend
 
@@ -77,7 +77,7 @@ same data, interactive.
 |:--|--:|:--|
 | Listening | 192 min | -40% |
 | Grammar | 13 quizzes | +117% |
-| Vocab | 842 cards | +35% |
+| Vocab | 972 cards | +56% |
 | Reading | 45 min | — |
 | Writing | 1 prompts | +0% |
 | Speaking | 85 min | +42% |
