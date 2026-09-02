@@ -9,11 +9,11 @@ same data, interactive.
 
 <!-- STATS:START -->
 
-<sub>Updated 01 Sep 2026, 20:56 UTC &nbsp;·&nbsp; 89 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 28 Aug 2026</sub>
+<sub>Updated 02 Sep 2026, 04:07 UTC &nbsp;·&nbsp; 93 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 01 Sep 2026</sub>
 
 | Current streak | Longest streak | Consistency | Total time |
 |:-:|:-:|:-:|:-:|
-| **12** days | **47** days | **96%** | **92** h |
+| **16** days | **47** days | **96%** | **97** h |
 
 ## Study calendar
 
@@ -27,13 +27,13 @@ same data, interactive.
 
 | Skill | Total | Time | Days practised | Weeks on target |
 |:--|--:|--:|--:|--:|
-| Listening | 3,000 min | 50.0 h | 68 (76%) | 75% |
-| Grammar | 197 quizzes | 16.4 h | 55 (62%) | 25% |
-| Vocab | 4,878 cards | 6.8 h | 45 (51%) | 33% |
-| Reading | 310 min | 5.2 h | 14 (16%) | 8% |
-| Writing | 10 prompts | 4.2 h | 7 (8%) | 17% |
-| Speaking | 595 min | 9.9 h | 23 (26%) | 50% |
-| **Total** | | **92 h** | | |
+| Listening | 3,107 min | 51.8 h | 71 (76%) | 75% |
+| Grammar | 207 quizzes | 17.2 h | 57 (61%) | 25% |
+| Vocab | 5,247 cards | 7.3 h | 49 (53%) | 33% |
+| Reading | 355 min | 5.9 h | 15 (16%) | 8% |
+| Writing | 11 prompts | 4.6 h | 8 (9%) | 17% |
+| Speaking | 630 min | 10.5 h | 25 (27%) | 50% |
+| **Total** | | **97 h** | | |
 
 ## 7-day rolling trend
 
@@ -75,14 +75,14 @@ same data, interactive.
 
 | Skill | Last 7 days | vs. previous 7 |
 |:--|--:|:--|
-| Listening | 289 min | +84% |
-| Grammar | 9 quizzes | — |
-| Vocab | 768 cards | +72% |
-| Reading | 0 min | — |
-| Writing | 1 prompts | -75% |
-| Speaking | 110 min | +83% |
+| Listening | 192 min | -40% |
+| Grammar | 13 quizzes | +117% |
+| Vocab | 842 cards | +35% |
+| Reading | 45 min | — |
+| Writing | 1 prompts | +0% |
+| Speaking | 85 min | +42% |
 
-<sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 25min/prompt. 65 h of that is logged directly.</sub>
+<sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 25min/prompt. 68 h of that is logged directly.</sub>
 
 <!-- STATS:END -->
 
