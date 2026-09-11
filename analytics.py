@@ -1,8 +1,8 @@
 """
 French habit tracker - analytics.
 
-Pulls the Daily Log (and Weekly Objectives) from the Google Sheet and computes
-streaks, trends, skill balance, and objective attainment.
+Pulls the Daily Log from the Google Sheet and computes streaks, trends, and
+skill balance.
 
     python analytics.py            # print the full text report
     python analytics.py --push     # also write results into the Analytics tab
@@ -58,7 +58,6 @@ SERVICE_ACCOUNT = os.environ.get(
 SHEET_KEY = os.environ.get("FR_SHEET_KEY", "")
 
 DAILY_TAB = os.environ.get("FR_DAILY_TAB", "📅Daily Log")
-OBJECTIVES_TAB = os.environ.get("FR_OBJECTIVES_TAB", "🎯 Weekly Objectives")
 ANALYTICS_TAB = os.environ.get("FR_ANALYTICS_TAB", "📈 Analytics")
 
 if not SHEET_KEY:
@@ -152,21 +151,6 @@ def load_daily_log(gc=None) -> pd.DataFrame:
     df["total_minutes"] = df[TIME_SKILLS].sum(axis=1)
     df["est_minutes"] = estimated_minutes(df).sum(axis=1)
     return df
-
-
-def load_objectives(gc=None) -> pd.DataFrame:
-    gc = gc or _client()
-    sh = gc.open_by_key(SHEET_KEY)
-    records = sh.worksheet(OBJECTIVES_TAB).get_all_values()
-    header, *rows = records
-    obj = pd.DataFrame(rows, columns=[h.strip() for h in header])
-    obj["Week Starting"] = pd.to_datetime(obj["Week Starting"], errors="coerce")
-    obj = obj.dropna(subset=["Week Starting"]).set_index("Week Starting").sort_index()
-    for s in SKILLS:
-        obj[s] = pd.to_numeric(obj[s], errors="coerce").fillna(0)
-    # drop all-zero placeholder weeks
-    obj = obj[obj[SKILLS].sum(axis=1) > 0]
-    return obj[SKILLS]
 
 
 # --------------------------------------------------------------------------- #
@@ -300,14 +284,13 @@ def trend_slopes(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows).T
 
 
-def skill_balance(df: pd.DataFrame, obj: pd.DataFrame | None) -> pd.DataFrame:
+def skill_balance(df: pd.DataFrame) -> pd.DataFrame:
     """
     Compare skills on a common footing:
       - share of estimated time (all six skills, minute-equivalents)
       - share of logged minutes (timed skills only)
       - consistency: % of tracked days the skill was touched
       - coefficient of variation of daily effort (spikiness)
-      - attainment vs the average weekly objective, if objectives are available
     """
     rows = {}
     total_min = df[TIME_SKILLS].sum().sum()
@@ -323,25 +306,7 @@ def skill_balance(df: pd.DataFrame, obj: pd.DataFrame | None) -> pd.DataFrame:
             "cv_daily": (col.std() / col.mean()) if col.mean() else np.nan,
             "median_active_day": active.median() if len(active) else 0.0,
         }
-    bal = pd.DataFrame(rows).T
-
-    if obj is not None and len(obj):
-        wk = weekly(df)
-        common = wk.index.intersection(obj.index)
-        if len(common):
-            ratio = (wk.loc[common] / obj.loc[common].replace(0, np.nan)) * 100
-            bal["obj_attainment_pct_mean"] = ratio.mean()
-            bal["obj_weeks_hit_pct"] = 100 * (ratio >= 100).mean()
-    return bal
-
-
-def objective_attainment(df: pd.DataFrame, obj: pd.DataFrame) -> pd.DataFrame:
-    wk = weekly(df)
-    common = wk.index.intersection(obj.index)
-    wk, obj = wk.loc[common], obj.loc[common]
-    pct = (wk / obj.replace(0, np.nan)) * 100
-    pct.columns = [f"{c} %" for c in pct.columns]
-    return pct.round(0)
+    return pd.DataFrame(rows).T
 
 
 def day_of_week(df: pd.DataFrame) -> pd.DataFrame:
@@ -369,14 +334,9 @@ def _fmt_run(run):
     return f"{n} days ({s.date():%d %b} → {e.date():%d %b})"
 
 
-def build_report(df=None, obj=None) -> str:
+def build_report(df=None) -> str:
     if df is None:
         df = load_daily_log()
-    if obj is None:
-        try:
-            obj = load_objectives()
-        except Exception:
-            obj = None
 
     L = []
     p = L.append
@@ -438,15 +398,12 @@ def build_report(df=None, obj=None) -> str:
           f"   {arrow} {r['slope_per_week']:+.2f}/day per week")
 
     # skill balance -------------------------------------------------
-    bal = skill_balance(df, obj)
+    bal = skill_balance(df)
     p("\n── SKILL BALANCE ────────────────────────────────────────────────")
     cols = ["share_of_time_pct", "days_touched_pct", "cv_daily", "median_active_day"]
-    if "obj_attainment_pct_mean" in bal:
-        cols += ["obj_attainment_pct_mean", "obj_weeks_hit_pct"]
     hdr = {"share_of_time_pct": "time share", "share_of_minutes_pct": "min share",
            "days_touched_pct": "days %",
-           "cv_daily": "spikiness", "median_active_day": "med/day",
-           "obj_attainment_pct_mean": "obj att%", "obj_weeks_hit_pct": "wks hit%"}
+           "cv_daily": "spikiness", "median_active_day": "med/day"}
     p("  " + f"{'skill':<10}" + "".join(f"{hdr[c]:>11}" for c in cols))
     for sk, r in bal.iterrows():
         cells = []
@@ -466,17 +423,6 @@ def build_report(df=None, obj=None) -> str:
     p(f"  Most neglected: {touched.index[0]} ({touched.iloc[0]:.0f}% of days)"
       f"  ·  Most consistent: {touched.index[-1]} ({touched.iloc[-1]:.0f}%)")
 
-    # objectives --------------------------------------------------
-    if obj is not None and len(obj):
-        oa = objective_attainment(df, obj)
-        p("\n── WEEKLY OBJECTIVE ATTAINMENT  (% of target) ───────────────────")
-        p("  " + f"{'week':<12}" + "".join(f"{c.split()[0][:4]:>7}" for c in oa.columns))
-        for wkstart, r in oa.iterrows():
-            p(f"  {wkstart.date():%d %b %y}".ljust(14)
-              + "".join(f"{('—' if pd.isna(v) else f'{v:.0f}'):>7}" for v in r.values))
-        hit = (oa >= 100).mean() * 100
-        p("  weeks ≥100%: " + "  ".join(f"{c.split()[0]} {hit[c]:.0f}%" for c in oa.columns))
-
     # day of week ----------------------------------------------
     dw = day_of_week(df)
     p("\n── DAY-OF-WEEK PATTERN ──────────────────────────────────────────")
@@ -494,22 +440,17 @@ def build_report(df=None, obj=None) -> str:
 # --------------------------------------------------------------------------- #
 # optional: push a compact summary into the Analytics tab
 # --------------------------------------------------------------------------- #
-def push_to_sheet(df=None, obj=None, start_cell="A20"):
+def push_to_sheet(df=None, start_cell="A20"):
     gc = _client()
     if df is None:
         df = load_daily_log(gc)
-    if obj is None:
-        try:
-            obj = load_objectives(gc)
-        except Exception:
-            obj = None
     sh = gc.open_by_key(SHEET_KEY)
     ws = sh.worksheet(ANALYTICS_TAB)
 
     s = streaks(df)
     t = totals(df)
     m = momentum(df)
-    bal = skill_balance(df, obj)
+    bal = skill_balance(df)
     stamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
 
     block = [
@@ -556,11 +497,6 @@ def push_to_sheet(df=None, obj=None, start_cell="A20"):
 
 if __name__ == "__main__":
     _df = load_daily_log()
-    _obj = None
-    try:
-        _obj = load_objectives()
-    except Exception as e:  # noqa
-        print(f"(objectives unavailable: {e})")
-    print(build_report(_df, _obj))
+    print(build_report(_df))
     if "--push" in sys.argv:
-        push_to_sheet(_df, _obj)
+        push_to_sheet(_df)

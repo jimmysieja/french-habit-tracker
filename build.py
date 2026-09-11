@@ -60,11 +60,10 @@ def _picture(name: str, alt: str) -> str:
     )
 
 
-def stats_markdown(df, obj) -> str:
+def stats_markdown(df) -> str:
     s = A.streaks(df)
     t = A.totals(df)
     m = A.momentum(df)
-    bal = A.skill_balance(df, obj)
     est_total = t["est_hours"].sum()
     logged = t["hours"].dropna().sum()
     start, end = df.index[0].date(), df.index[-1].date()
@@ -93,17 +92,15 @@ def stats_markdown(df, obj) -> str:
 
     L.append("## By skill")
     L.append("")
-    L.append("| Skill | Total | Time | Days practised | Weeks on target |")
-    L.append("|:--|--:|--:|--:|--:|")
+    L.append("| Skill | Total | Time | Days practised |")
+    L.append("|:--|--:|--:|--:|")
     for sk in A.SKILLS:
         r = t.loc[sk]
-        hit = bal.loc[sk].get("obj_weeks_hit_pct", float("nan"))
-        hit_s = "—" if hit != hit else f"{hit:.0f}%"
         L.append(
             f"| {sk} | {r['total']:,.0f} {A.UNIT[sk]} | {r['est_hours']:.1f} h "
-            f"| {int(r['days_practiced'])} ({100*r['days_practiced']/len(df):.0f}%) | {hit_s} |"
+            f"| {int(r['days_practiced'])} ({100*r['days_practiced']/len(df):.0f}%) |"
         )
-    L.append(f"| **Total** | | **{est_total:.0f} h** | | |")
+    L.append(f"| **Total** | | **{est_total:.0f} h** | |")
     L.append("")
 
     L.append("## 7-day rolling trend")
@@ -111,15 +108,15 @@ def stats_markdown(df, obj) -> str:
     L.append(_picture("trend", "Seven-day rolling average per skill, whole period"))
     L.append("")
 
-    L.append("## Weekly totals against objective")
+    L.append("## Weekly totals")
     L.append("")
-    L.append(_picture("objectives", "Weekly totals per skill with the objective line"))
+    L.append(_picture("weekly", "Weekly totals per skill"))
     L.append("")
 
     L.append("## Skill balance")
     L.append("")
     L.append(_picture("skills", "Share of days each skill was practised"))
-    L.append("<sub>Bar = share of days practised. Tick = average weekly-objective attainment.</sub>")
+    L.append("<sub>Bar = share of days practised.</sub>")
     L.append("")
 
     L.append("## Where the time goes")
@@ -152,14 +149,14 @@ def stats_markdown(df, obj) -> str:
     return "\n".join(L)
 
 
-def update_readme(df, obj, path: Path | None = None) -> bool:
+def update_readme(df, path: Path | None = None) -> bool:
     path = path or (ROOT / "README.md")
     text = path.read_text(encoding="utf-8")
     if MARK_START not in text or MARK_END not in text:
         raise SystemExit(f"{path.name} is missing the {MARK_START} / {MARK_END} markers")
     head, _, rest = text.partition(MARK_START)
     _, _, tail = rest.partition(MARK_END)
-    new = f"{head}{MARK_START}\n\n{stats_markdown(df, obj)}\n\n{MARK_END}{tail}"
+    new = f"{head}{MARK_START}\n\n{stats_markdown(df)}\n\n{MARK_END}{tail}"
     if new != text:
         path.write_text(new, encoding="utf-8")
         return True
@@ -173,22 +170,17 @@ def main() -> None:
         os.environ["REPO_URL"] = repo_url  # picked up by dashboard.page_body()
 
     df = A.load_daily_log()
-    try:
-        obj = A.load_objectives()
-    except Exception as e:  # noqa: BLE001
-        print(f"(objectives unavailable: {e})")
-        obj = None
 
     public = ROOT / "public"
     public.mkdir(exist_ok=True)
-    (public / "index.html").write_text(D.build_html(df, obj), encoding="utf-8")
+    (public / "index.html").write_text(D.build_html(df), encoding="utf-8")
     (public / ".nojekyll").write_text("", encoding="utf-8")
     print(f"wrote {public/'index.html'}")
 
-    written = D.export_assets(df, obj, ROOT / "assets")
+    written = D.export_assets(df, ROOT / "assets")
     print(f"wrote {len(written)} chart svgs to assets/")
 
-    changed = update_readme(df, obj)
+    changed = update_readme(df)
     print("README.md updated" if changed else "README.md already current")
 
 

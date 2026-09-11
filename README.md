@@ -9,11 +9,11 @@ same data, interactive.
 
 <!-- STATS:START -->
 
-<sub>Updated 10 Sep 2026, 08:59 UTC &nbsp;·&nbsp; 101 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 09 Sep 2026</sub>
+<sub>Updated 11 Sep 2026, 04:42 UTC &nbsp;·&nbsp; 102 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 10 Sep 2026</sub>
 
 | Current streak | Longest streak | Consistency | Total time |
 |:-:|:-:|:-:|:-:|
-| **24** days | **47** days | **96%** | **106** h |
+| **25** days | **47** days | **96%** | **106** h |
 
 ## Study calendar
 
@@ -25,15 +25,15 @@ same data, interactive.
 
 ## By skill
 
-| Skill | Total | Time | Days practised | Weeks on target |
-|:--|--:|--:|--:|--:|
-| Listening | 3,381 min | 56.4 h | 78 (77%) | 75% |
-| Grammar | 228 quizzes | 19.0 h | 63 (62%) | 25% |
-| Vocab | 6,316 cards | 8.8 h | 55 (54%) | 33% |
-| Reading | 375 min | 6.2 h | 16 (16%) | 8% |
-| Writing | 12 prompts | 5.0 h | 9 (9%) | 17% |
-| Speaking | 635 min | 10.6 h | 26 (26%) | 50% |
-| **Total** | | **106 h** | | |
+| Skill | Total | Time | Days practised |
+|:--|--:|--:|--:|
+| Listening | 3,381 min | 56.4 h | 78 (76%) |
+| Grammar | 231 quizzes | 19.2 h | 64 (63%) |
+| Vocab | 6,316 cards | 8.8 h | 55 (54%) |
+| Reading | 375 min | 6.2 h | 16 (16%) |
+| Writing | 12 prompts | 5.0 h | 9 (9%) |
+| Speaking | 635 min | 10.6 h | 26 (25%) |
+| **Total** | | **106 h** | |
 
 ## 7-day rolling trend
 
@@ -42,11 +42,11 @@ same data, interactive.
   <img alt="Seven-day rolling average per skill, whole period" src="assets/trend-light.svg" width="100%">
 </picture>
 
-## Weekly totals against objective
+## Weekly totals
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/objectives-dark.svg">
-  <img alt="Weekly totals per skill with the objective line" src="assets/objectives-light.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/weekly-dark.svg">
+  <img alt="Weekly totals per skill" src="assets/weekly-light.svg" width="100%">
 </picture>
 
 ## Skill balance
@@ -55,7 +55,7 @@ same data, interactive.
   <source media="(prefers-color-scheme: dark)" srcset="assets/skills-dark.svg">
   <img alt="Share of days each skill was practised" src="assets/skills-light.svg" width="100%">
 </picture>
-<sub>Bar = share of days practised. Tick = average weekly-objective attainment.</sub>
+<sub>Bar = share of days practised.</sub>
 
 ## Where the time goes
 
@@ -75,12 +75,12 @@ same data, interactive.
 
 | Skill | Last 7 days | vs. previous 7 |
 |:--|--:|:--|
-| Listening | 222 min | +2% |
-| Grammar | 16 quizzes | +7% |
-| Vocab | 715 cards | -21% |
+| Listening | 162 min | -38% |
+| Grammar | 16 quizzes | -11% |
+| Vocab | 646 cards | -18% |
 | Reading | 20 min | -56% |
 | Writing | 0 prompts | -100% |
-| Speaking | 5 min | -94% |
+| Speaking | 0 min | -100% |
 
 <sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 25min/prompt. 73 h of that is logged directly.</sub>
 
@@ -90,15 +90,13 @@ same data, interactive.
 
 A daily row per skill, in whatever unit is natural for it: minutes for
 listening / reading / speaking, quizzes for grammar, cards for vocab, prompts for
-writing. Weekly objectives sit alongside so I can see where I'm keeping pace and
-where I'm slipping. The "estimated time on French" figure rolls the counts back
-into minutes with rough conversion rates so all six skills compare on one axis.
+writing. The "estimated time on French" figure rolls the counts back into minutes
+with rough conversion rates so all six skills compare on one axis.
 
 ## How it's built
 
 `analytics.py` pulls the sheet with [gspread](https://docs.gspread.org/) and does
-the maths (streaks, rolling trends, skill balance, objective attainment) in
-pandas. `dashboard.py` draws every chart as hand-written SVG — no chart library —
+the maths (streaks, rolling trends, skill balance) in pandas. `dashboard.py` draws every chart as hand-written SVG — no chart library —
 and emits both a standalone `index.html` and the light/dark `.svg` files embedded
 above. A GitHub Actions workflow runs `build.py` on a schedule, commits the
 refreshed stats, and redeploys the dashboard to GitHub Pages.

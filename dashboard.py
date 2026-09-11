@@ -117,12 +117,11 @@ def heatmap_svg(df: pd.DataFrame) -> str:
 # --------------------------------------------------------------------------- #
 # 2. 7-day rolling average, small multiples (one <svg> per skill, all blue)
 # --------------------------------------------------------------------------- #
-def _panel(title: str, sub: str, series: np.ndarray, unit: str,
-           target: float | None = None) -> str:
+def _panel(title: str, sub: str, series: np.ndarray, unit: str) -> str:
     W, H = 340, 132
     ml, mr, mt, mb = 10, 10, 30, 16
     n = len(series)
-    ymax = max(series.max(), (target or 0)) * 1.15 or 1
+    ymax = series.max() * 1.15 or 1
     xs = lambda i: ml + (W - ml - mr) * (i / (n - 1) if n > 1 else 0)
     ys = lambda v: H - mb - (H - mt - mb) * (v / ymax)
 
@@ -130,21 +129,12 @@ def _panel(title: str, sub: str, series: np.ndarray, unit: str,
     area = f"{ml},{ys(0):.1f} " + pts + f" {xs(n-1):.1f},{ys(0):.1f}"
     end_x, end_y = xs(n - 1), ys(series[-1])
 
-    tline = ""
-    if target:
-        ty = ys(target)
-        tline = (
-            f'<line class="p-target" x1="{ml}" y1="{ty:.1f}" x2="{W-mr}" y2="{ty:.1f}"/>'
-            f'<text class="p-tlabel" x="{W-mr}" y="{ty-4:.1f}">target {fmt(target)}</text>'
-        )
-
     return (
         f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" aria-label="{esc(title)} {esc(sub)}">'
         f'<text class="p-title" x="{ml}" y="13">{esc(title)}</text>'
         f'<text class="p-sub" x="{ml}" y="25">{esc(sub)}</text>'
         f'<polygon class="p-area" points="{area}"/>'
         f'<polyline class="p-line" points="{pts}"/>'
-        f'{tline}'
         f'<circle class="p-end" cx="{end_x:.1f}" cy="{end_y:.1f}" r="3.5"/>'
         f'<text class="p-endlab" x="{end_x-6:.1f}" y="{end_y-7:.1f}">{fmt(series[-1],1)}</text>'
         f"</svg>"
@@ -164,32 +154,19 @@ def trend_panels(df: pd.DataFrame) -> str:
 
 
 # --------------------------------------------------------------------------- #
-# 3. weekly totals vs objective, small multiples
+# 3. weekly totals, small multiples
 # --------------------------------------------------------------------------- #
-def weekly_panels(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
+def weekly_panels(df: pd.DataFrame) -> str:
     wk = A.weekly(df)
-    common = wk.index if obj is None else wk.index.intersection(obj.index)
-    wk = wk.loc[common]
-    out = []
-    for s in SKILLS:
-        vals = wk[s].to_numpy(dtype=float)
-        tgt = None
-        hit_txt = ""
-        if obj is not None and s in obj:
-            tg = obj.loc[common, s].replace(0, np.nan)
-            tgt = float(np.nanmedian(tg)) if tg.notna().any() else None
-            if tg.notna().any():
-                hit = float((wk[s] >= tg).mean() * 100)
-                hit_txt = f"  -  {hit:.0f}% of weeks on target"
-        out.append(_bars_panel(s, f"weekly {UNIT[s]}{hit_txt}", vals, tgt))
+    out = [_bars_panel(s, f"weekly {UNIT[s]}", wk[s].to_numpy(dtype=float)) for s in SKILLS]
     return f'<div class="grid">{"".join(out)}</div>'
 
 
-def _bars_panel(title: str, sub: str, vals: np.ndarray, target: float | None) -> str:
+def _bars_panel(title: str, sub: str, vals: np.ndarray) -> str:
     W, H = 340, 132
     ml, mr, mt, mb = 10, 10, 30, 14
     n = len(vals)
-    ymax = max(vals.max(), (target or 0)) * 1.15 or 1
+    ymax = vals.max() * 1.15 or 1
     slot = (W - ml - mr) / n
     bw = min(18, slot - 3)
     y0 = H - mb
@@ -203,25 +180,20 @@ def _bars_panel(title: str, sub: str, vals: np.ndarray, target: float | None) ->
             f'<rect class="b-bar" x="{x:.1f}" y="{yv:.1f}" width="{bw:.1f}" '
             f'height="{max(0, y0-yv):.1f}" rx="3"><title>{fmt(v)}</title></rect>'
         )
-    tline = ""
-    if target:
-        ty = ys(target)
-        tline = (f'<line class="p-target" x1="{ml}" y1="{ty:.1f}" x2="{W-mr}" y2="{ty:.1f}"/>'
-                 f'<text class="p-tlabel" x="{W-mr}" y="{ty-4:.1f}">target {fmt(target)}</text>')
     return (
         f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" aria-label="{esc(title)} {esc(sub)}">'
         f'<text class="p-title" x="{ml}" y="13">{esc(title)}</text>'
         f'<text class="p-sub" x="{ml}" y="25">{esc(sub)}</text>'
         f'<line class="p-base" x1="{ml}" y1="{y0}" x2="{W-mr}" y2="{y0}"/>'
-        f'{"".join(bars)}{tline}</svg>'
+        f'{"".join(bars)}</svg>'
     )
 
 
 # --------------------------------------------------------------------------- #
 # 4. skill balance - horizontal bars, % of days touched
 # --------------------------------------------------------------------------- #
-def balance_svg(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
-    bal = A.skill_balance(df, obj).sort_values("days_touched_pct", ascending=True)
+def balance_svg(df: pd.DataFrame) -> str:
+    bal = A.skill_balance(df).sort_values("days_touched_pct", ascending=True)
     rows = list(bal.index)
     W = 560
     rowh = 34
@@ -238,11 +210,6 @@ def balance_svg(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
         out.append(f'<rect class="h-fill" x="{ml}" y="{y}" width="{bw:.1f}" height="18" rx="4">'
                    f'<title>{esc(s)}: practised on {pct:.0f}% of days</title></rect>')
         out.append(f'<text class="h-val" x="{ml+bw+6:.1f}" y="{y+13}">{pct:.0f}%</text>')
-        oa = bal.loc[s].get("obj_attainment_pct_mean", np.nan)
-        if not np.isnan(oa):
-            ox = ml + span * min(oa, 100) / 100
-            out.append(f'<line class="h-obj" x1="{ox:.1f}" y1="{y-3}" x2="{ox:.1f}" y2="{y+21}">'
-                       f'<title>avg {oa:.0f}% of weekly objective</title></line>')
     out.append("</svg>")
     return "".join(out)
 
@@ -340,10 +307,10 @@ def _grid_shell(n: int, label: str):
     return head, origin, w, h
 
 
-def _line_panel(ox, oy, title, sub, series, target=None):
+def _line_panel(ox, oy, title, sub, series):
     ml, mr, mt, mb = 6, 6, 30, 12
     n = len(series)
-    ymax = (max(float(series.max()), target or 0) * 1.15) or 1
+    ymax = float(series.max()) * 1.15 or 1
     xs = lambda i: ox + ml + (_PW - ml - mr) * (i / (n - 1) if n > 1 else 0)
     ys = lambda v: oy + _PH - mb - (_PH - mt - mb) * (v / ymax)
     pts = " ".join(f"{xs(i):.1f},{ys(v):.1f}" for i, v in enumerate(series))
@@ -358,10 +325,10 @@ def _line_panel(ox, oy, title, sub, series, target=None):
     )
 
 
-def _col_panel(ox, oy, title, sub, vals, target=None):
+def _col_panel(ox, oy, title, sub, vals):
     ml, mr, mt, mb = 6, 6, 30, 12
     n = len(vals)
-    ymax = (max(float(vals.max()), target or 0) * 1.15) or 1
+    ymax = float(vals.max()) * 1.15 or 1
     slot = (_PW - ml - mr) / n
     bw = min(14, slot - 2)
     y0 = oy + _PH - mb
@@ -371,16 +338,11 @@ def _col_panel(ox, oy, title, sub, vals, target=None):
         f'width="{bw:.1f}" height="{max(0, y0-ys(v)):.1f}" rx="2"/>'
         for i, v in enumerate(vals)
     )
-    tline = ""
-    if target:
-        ty = ys(target)
-        tline = (f'<line class="p-target" x1="{ox+ml}" y1="{ty:.1f}" '
-                 f'x2="{ox+_PW-mr}" y2="{ty:.1f}"/>')
     return (
         f'<text class="p-title" x="{ox+ml}" y="{oy+13}">{esc(title)}</text>'
         f'<text class="p-sub" x="{ox+ml}" y="{oy+25}">{esc(sub)}</text>'
         f'<line class="p-base" x1="{ox+ml}" y1="{y0}" x2="{ox+_PW-mr}" y2="{y0}"/>'
-        f'{bars}{tline}'
+        f'{bars}'
     )
 
 
@@ -398,24 +360,13 @@ def trend_grid_svg(df: pd.DataFrame) -> str:
     return head + "".join(body) + "</svg>"
 
 
-def objective_grid_svg(df: pd.DataFrame, obj: "pd.DataFrame | None") -> str:
+def weekly_grid_svg(df: pd.DataFrame) -> str:
     wk = A.weekly(df)
-    common = wk.index if obj is None else wk.index.intersection(obj.index)
-    wk = wk.loc[common]
-    head, origin, *_ = _grid_shell(len(SKILLS), "Weekly totals against objective")
+    head, origin, *_ = _grid_shell(len(SKILLS), "Weekly totals per skill")
     body = []
     for i, s in enumerate(SKILLS):
-        vals = wk[s].to_numpy(dtype=float)
-        tgt = None
-        sub = f"weekly {UNIT[s]}"
-        if obj is not None and s in obj:
-            tg = obj.loc[common, s].replace(0, np.nan)
-            if tg.notna().any():
-                tgt = float(np.nanmedian(tg))
-                hit = float((wk[s] >= tg).mean() * 100)
-                sub = f"weekly {UNIT[s]} · {hit:.0f}% of weeks on target"
         ox, oy = origin(i)
-        body.append(_col_panel(ox, oy, s, sub, vals, tgt))
+        body.append(_col_panel(ox, oy, s, f"weekly {UNIT[s]}", wk[s].to_numpy(dtype=float)))
     return head + "".join(body) + "</svg>"
 
 
@@ -451,8 +402,6 @@ CHART_CSS = """
 .p-area{fill:var(--series-1);opacity:.10}
 .p-end{fill:var(--series-1);stroke:var(--surface);stroke-width:2}
 .p-endlab{fill:var(--ink2);font-size:10px;text-anchor:end;font-weight:600}
-.p-target{stroke:var(--muted);stroke-width:1;stroke-dasharray:0}
-.p-tlabel{fill:var(--muted);font-size:9px;text-anchor:end}
 .p-base{stroke:var(--base);stroke-width:1}
 .b-bar{fill:var(--series-1)}
 .b-bar:hover{fill:var(--accent);opacity:.85}
@@ -468,7 +417,6 @@ rect:hover{opacity:.8}
 .h-track{fill:var(--grid)}
 .h-fill{fill:var(--accent)}
 .h-val{fill:var(--ink2);font-size:11px;font-weight:600;dominant-baseline:middle}
-.h-obj{stroke:var(--ink);stroke-width:2}
 .ts-lab{fill:var(--ink);font-size:11px;font-weight:600}
 .ts-val{fill:var(--ink2);font-size:11px}
 """
@@ -551,17 +499,17 @@ def standalone_svg(body: str, theme: str = "light") -> str:
     return body[:cut] + style + bg + body[cut:]
 
 
-def export_assets(df: pd.DataFrame, obj: "pd.DataFrame | None", outdir="assets") -> list[Path]:
+def export_assets(df: pd.DataFrame, outdir="assets") -> list[Path]:
     """Write light+dark standalone SVGs used by the README."""
     out = Path(outdir)
     out.mkdir(parents=True, exist_ok=True)
     charts = {
         "calendar": heatmap_svg(df),
-        "skills": balance_svg(df, obj),
+        "skills": balance_svg(df),
         "time-split": timesplit_svg(df),
         "weekday": dow_svg(df),
         "trend": trend_grid_svg(df),
-        "objectives": objective_grid_svg(df, obj),
+        "weekly": weekly_grid_svg(df),
     }
     written = []
     for name, svg in charts.items():
@@ -599,7 +547,7 @@ def momentum_block(df: pd.DataFrame) -> str:
     return f'<div class="mom">{"".join(cards)}</div>'
 
 
-def weekly_table(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
+def weekly_table(df: pd.DataFrame) -> str:
     wk = A.weekly(df)
     head = "".join(f"<th>{s}</th>" for s in SKILLS)
     body = []
@@ -609,7 +557,7 @@ def weekly_table(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
     return f"<table><thead><tr><th>Week starting</th>{head}</tr></thead><tbody>{''.join(body)}</tbody></table>"
 
 
-def page_body(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
+def page_body(df: pd.DataFrame) -> str:
     """The <title> + <style> + content, with no document skeleton.
 
     Usable as-is for a Claude Artifact (which supplies <!doctype>/<head>/<body>);
@@ -684,14 +632,13 @@ def page_body(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
 </section>
 
 <section>
-  <h2>Weekly totals against objective</h2>
-  {weekly_panels(df, obj)}
+  <h2>Weekly totals</h2>
+  {weekly_panels(df)}
 </section>
 
 <section>
   <h2>Skill balance — share of days practised</h2>
-  <div class="card">{balance_svg(df, obj)}
-  <p class="cap">Vertical tick = average weekly-objective attainment for that skill.</p></div>
+  <div class="card">{balance_svg(df)}</div>
 </section>
 
 <section>
@@ -711,18 +658,18 @@ def page_body(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
   <h2 style="margin-top:20px">All-time totals</h2>
   {totals_table}
   <h2 style="margin-top:24px">Weekly totals</h2>
-  {weekly_table(df, obj)}
+  {weekly_table(df)}
 </details>
 
 <p class="foot">Built from a Google Sheet with pandas and hand-drawn SVG · rebuilt daily by GitHub Actions{foot_src}</p>
 </div>"""
 
 
-def build_html(df: pd.DataFrame, obj: pd.DataFrame | None) -> str:
+def build_html(df: pd.DataFrame) -> str:
     return (
         '<!doctype html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
-        f"</head><body>{page_body(df, obj)}</body></html>"
+        f"</head><body>{page_body(df)}</body></html>"
     )
 
 
@@ -732,14 +679,9 @@ def main(argv):
         out = Path(argv[argv.index("--out") + 1])
 
     df = A.load_daily_log()
-    try:
-        obj = A.load_objectives()
-    except Exception as e:
-        print(f"(objectives unavailable: {e})")
-        obj = None
 
     body_only = "--body-only" in argv
-    out.write_text(page_body(df, obj) if body_only else build_html(df, obj), encoding="utf-8")
+    out.write_text(page_body(df) if body_only else build_html(df), encoding="utf-8")
     print(f"Wrote {out.resolve()}  ({out.stat().st_size/1024:.0f} KB)")
     if "--no-open" not in argv and not body_only:
         webbrowser.open(out.resolve().as_uri())
