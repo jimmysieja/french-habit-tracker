@@ -175,7 +175,7 @@ def _panel(title: str, unit: str, dates: pd.DatetimeIndex, series: np.ndarray) -
         ticks.append(f'<text class="p-xlab" x="{x:.1f}" y="{H-6}">{lab}</text>')
 
     return (
-        f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" '
+        f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" class="sk-{title.lower()}" '
         f'aria-label="{esc(title)}, 7-day rolling average, {esc(unit)} per day">'
         f'<text class="p-title" x="{ml-4}" y="14">{esc(title)}</text>'
         f'<text class="p-unit" x="{W-mr}" y="14" text-anchor="end">{esc(unit)}/day</text>'
@@ -225,7 +225,8 @@ def _bars_panel(title: str, sub: str, vals: np.ndarray) -> str:
             f'height="{max(0, y0-yv):.1f}" rx="3"><title>{fmt(v)}</title></rect>'
         )
     return (
-        f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" aria-label="{esc(title)} {esc(sub)}">'
+        f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" class="sk-{title.lower()}" '
+        f'aria-label="{esc(title)} {esc(sub)}">'
         f'<text class="p-title" x="{ml}" y="13">{esc(title)}</text>'
         f'<text class="p-sub" x="{ml}" y="25">{esc(sub)}</text>'
         f'<line class="p-base" x1="{ml}" y1="{y0}" x2="{W-mr}" y2="{y0}"/>'
@@ -341,7 +342,7 @@ def balance_svg(df: pd.DataFrame) -> str:
         bw = span * pct / 100
         out.append(f'<text class="h-cat" x="{ml-10}" y="{y+13}">{esc(s)}</text>')
         out.append(f'<rect class="h-track" x="{ml}" y="{y}" width="{span}" height="18" rx="4"/>')
-        out.append(f'<rect class="h-fill" x="{ml}" y="{y}" width="{bw:.1f}" height="18" rx="4">'
+        out.append(f'<rect class="h-fill sk-{s.lower()}" x="{ml}" y="{y}" width="{bw:.1f}" height="18" rx="4">'
                    f'<title>{esc(s)}: practiced on {pct:.0f}% of days</title></rect>')
         out.append(f'<text class="h-val" x="{ml+bw+6:.1f}" y="{y+13}">{pct:.0f}%</text>')
     out.append("</svg>")
@@ -351,14 +352,7 @@ def balance_svg(df: pd.DataFrame) -> str:
 # --------------------------------------------------------------------------- #
 # 5. where the time goes - stacked bar of estimated minutes, largest first
 # --------------------------------------------------------------------------- #
-SLOT = {  # hue per skill, ordered so lookalike pastels never sit side by side
-    "Listening": "--series-1",  # blue
-    "Grammar": "--series-4",    # amber
-    "Vocab": "--series-6",      # teal
-    "Reading": "--series-2",    # red
-    "Writing": "--series-5",    # violet
-    "Speaking": "--series-3",   # green
-}
+SLOT = {s: f"--sk-{s.lower()}" for s in SKILLS}  # matches the sheet's own column colours
 
 
 def timesplit_svg(df: pd.DataFrame) -> str:
@@ -452,11 +446,13 @@ def _line_panel(ox, oy, title, sub, series):
     area = f"{ox+ml},{ys(0):.1f} {pts} {xs(n-1):.1f},{ys(0):.1f}"
     ex, ey = xs(n - 1), ys(series[-1])
     return (
+        f'<g class="sk-{title.lower()}">'
         f'<text class="p-title" x="{ox+ml}" y="{oy+13}">{esc(title)}</text>'
         f'<text class="p-sub" x="{ox+ml}" y="{oy+25}">{esc(sub)}</text>'
         f'<polygon class="p-area" points="{area}"/>'
         f'<polyline class="p-line" points="{pts}"/>'
         f'<circle class="p-end" cx="{ex:.1f}" cy="{ey:.1f}" r="3"/>'
+        f'</g>'
     )
 
 
@@ -474,10 +470,12 @@ def _col_panel(ox, oy, title, sub, vals):
         for i, v in enumerate(vals)
     )
     return (
+        f'<g class="sk-{title.lower()}">'
         f'<text class="p-title" x="{ox+ml}" y="{oy+13}">{esc(title)}</text>'
         f'<text class="p-sub" x="{ox+ml}" y="{oy+25}">{esc(sub)}</text>'
         f'<line class="p-base" x1="{ox+ml}" y1="{y0}" x2="{ox+_PW-mr}" y2="{y0}"/>'
         f'{bars}'
+        f'</g>'
     )
 
 
@@ -505,23 +503,25 @@ def weekly_grid_svg(df: pd.DataFrame) -> str:
 # assemble page
 # --------------------------------------------------------------------------- #
 # Flat, editorial palette in the spirit of jimmysieja.github.io (Nunito, hairline
-# borders, no card fills). Charts stay single-accent by design - Listening's
-# blue doubles as the page accent - except "where the time goes", which is the
-# one place all six categorical hues appear together with a legend.
+# borders, no card fills). Aggregate charts (calendar, cumulative, day-of-week,
+# monthly) stay single-accent blue; anything broken out per skill - trend,
+# weekly, skill balance, momentum, "where the time goes", table headers -
+# picks up that skill's own colour, matched to the tracking sheet's column
+# fills (see SLOT / --sk-* below).
 _TOK_LIGHT = (
     "--font:'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;"
     "--bg:#ffffff;--ink:#1a1a1a;--ink2:#43454a;--muted:#666666;--border:#e3e3e3;"
     "--link:#3a6fd0;--link-hover:#29508f;--accent:#3a6fd0;"
-    "--series-1:#3a6fd0;--series-2:#b5534a;--series-3:#4f9d63;"
-    "--series-4:#c1822f;--series-5:#8067c2;--series-6:#3f9b8c;"
+    "--sk-listening:#ccc319;--sk-grammar:#358d35;--sk-vocab:#1fa4d6;"
+    "--sk-reading:#7a49ca;--sk-writing:#d45489;--sk-speaking:#ce4646;"
     "--heat-0:#edecea;--heat-1:#cfe0f5;--heat-2:#9dc0e9;--heat-3:#6693d4;--heat-4:#3a6fd0;"
     "--fr-blue:#3a6fd0;--fr-red:#b5534a;"
 )
 _TOK_DARK = (
     "--bg:#15161a;--ink:#e7e7e7;--ink2:#c3c4c8;--muted:#9b9b9b;--border:#2c2e34;"
     "--link:#7ea9ec;--link-hover:#a9c6f5;--accent:#7ea9ec;"
-    "--series-1:#7ea9ec;--series-2:#d38178;--series-3:#7bc491;"
-    "--series-4:#d9a768;--series-5:#ab98dd;--series-6:#6cc0b0;"
+    "--sk-listening:#f4ee7b;--sk-grammar:#8bd08b;--sk-vocab:#82d0ed;"
+    "--sk-reading:#b498e1;--sk-writing:#e49ab9;--sk-speaking:#e08585;"
     "--heat-0:#202126;--heat-1:#22334c;--heat-2:#2c4d75;--heat-3:#3f6ea3;--heat-4:#7ea9ec;"
     "--fr-blue:#7ea9ec;--fr-red:#d38178;"
 )
@@ -529,6 +529,15 @@ _TOK_DARK = (
 # rules that style the hand-built SVG marks - shared by the page and by the
 # standalone SVG files exported for the README.
 CHART_CSS = """
+/* per-skill colour switch: set via a sk-* class on a wrapping element, read
+   by the mark rules below (falls back to the neutral accent on aggregate
+   charts that aren't scoped to one skill, e.g. the calendar or day-of-week) */
+.sk-listening{--pc:var(--sk-listening)}
+.sk-grammar{--pc:var(--sk-grammar)}
+.sk-vocab{--pc:var(--sk-vocab)}
+.sk-reading{--pc:var(--sk-reading)}
+.sk-writing{--pc:var(--sk-writing)}
+.sk-speaking{--pc:var(--sk-speaking)}
 .p-title{fill:var(--ink);font-size:12px;font-weight:700}
 .p-sub{fill:var(--muted);font-size:10px}
 .p-unit{fill:var(--muted);font-size:10px}
@@ -537,11 +546,11 @@ CHART_CSS = """
 .p-base{stroke:var(--border);stroke-width:1}
 .p-tick{stroke:var(--border);stroke-width:1}
 .p-xlab{fill:var(--muted);font-size:9px;text-anchor:middle}
-.p-line{fill:none;stroke:var(--series-1);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-.p-area{fill:var(--series-1);opacity:.12}
-.p-end{fill:var(--series-1);stroke:var(--bg);stroke-width:2}
+.p-line{fill:none;stroke:var(--pc,var(--accent));stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.p-area{fill:var(--pc,var(--accent));opacity:.12}
+.p-end{fill:var(--pc,var(--accent));stroke:var(--bg);stroke-width:2}
 .p-endlab{fill:var(--ink2);font-size:10px;text-anchor:end;font-weight:700}
-.b-bar{fill:var(--series-1)}
+.b-bar{fill:var(--pc,var(--accent))}
 .b-bar:hover{fill:var(--link-hover);opacity:.9}
 .d-lab{fill:var(--muted);font-size:10px;text-anchor:middle}
 .d-val{fill:var(--ink2);font-size:10px;text-anchor:middle;font-weight:700}
@@ -552,7 +561,7 @@ rect:hover{opacity:.82}
 /* horizontal bars */
 .h-cat{fill:var(--ink);font-size:12px;text-anchor:end;dominant-baseline:middle}
 .h-track{fill:var(--border);opacity:.5}
-.h-fill{fill:var(--accent)}
+.h-fill{fill:var(--pc,var(--accent))}
 .h-val{fill:var(--ink2);font-size:11px;font-weight:700;dominant-baseline:middle}
 .ts-lab{fill:var(--ink);font-size:11px;font-weight:700}
 .ts-val{fill:var(--muted);font-size:11px}
@@ -614,6 +623,7 @@ h2{font-size:16px;font-weight:700;color:var(--ink);margin:0 0 14px}
 .grid svg,.grid2 svg{border:1px solid var(--border);border-radius:6px;padding:8px 6px 4px;display:block}
 
 .mom{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:18px}
+.mom .m{border-left:3px solid var(--pc,var(--border));padding-left:10px}
 .mom .sk{font-size:12.5px;color:var(--muted)}
 .mom .big{font-size:20px;font-weight:700;margin-top:3px;color:var(--ink)}
 .mom .big .unit{font-size:12px;font-weight:400;color:var(--muted)}
@@ -704,7 +714,7 @@ def momentum_block(df: pd.DataFrame) -> str:
     for s in SKILLS:
         r = m.loc[s]
         cards.append(
-            f'<div class="m"><div class="sk">{esc(s)}</div>'
+            f'<div class="m sk-{s.lower()}"><div class="sk">{esc(s)}</div>'
             f'<div class="big">{fmt(r["last_7d_total"])}<span class="unit"> {esc(UNIT[s])}</span></div></div>'
         )
     return f'<div class="mom">{"".join(cards)}</div>'
@@ -712,7 +722,9 @@ def momentum_block(df: pd.DataFrame) -> str:
 
 def weekly_table(df: pd.DataFrame) -> str:
     wk = A.weekly(df)
-    head = "".join(f"<th>{s}</th>" for s in SKILLS)
+    head = "".join(
+        f'<th style="border-bottom:3px solid var(--sk-{s.lower()})">{s}</th>' for s in SKILLS
+    )
     body = []
     for wkstart, row in wk.iterrows():
         tds = "".join(f"<td>{fmt(row[s])}</td>" for s in SKILLS)
@@ -722,7 +734,9 @@ def weekly_table(df: pd.DataFrame) -> str:
 
 def monthly_table(df: pd.DataFrame) -> str:
     mo = A.monthly(df)
-    head = "".join(f"<th>{s}</th>" for s in SKILLS)
+    head = "".join(
+        f'<th style="border-bottom:3px solid var(--sk-{s.lower()})">{s}</th>' for s in SKILLS
+    )
     body = []
     for mstart, row in mo.iterrows():
         tds = "".join(f"<td>{fmt(row[s])}</td>" for s in SKILLS)
@@ -764,7 +778,8 @@ def page_body(df: pd.DataFrame) -> str:
     for sk, r in t.iterrows():
         hrs = f'{r["hours"]:.1f} h' if pd.notna(r["hours"]) else "—"
         trows.append(
-            f"<tr><td>{sk}</td><td>{fmt(r['total'])} {UNIT[sk]}</td><td>{hrs}</td>"
+            f'<tr><td style="border-left:3px solid var(--sk-{sk.lower()});padding-left:7px">{sk}</td>'
+            f"<td>{fmt(r['total'])} {UNIT[sk]}</td><td>{hrs}</td>"
             f"<td>{r['est_hours']:.1f} h</td>"
             f"<td>{int(r['days_practiced'])}</td><td>{fmt(r['avg_per_active_day'],1)}</td>"
             f"<td>{fmt(r['best_day'])} ({r['best_day_date']:%d %b})</td></tr>"
