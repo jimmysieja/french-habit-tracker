@@ -78,7 +78,7 @@ def stats_markdown(df) -> str:
     L.append("")
 
     # compact summary strip
-    L.append("| Consistency | Total time | Typical weekly time | Last 7 days | Last 30 days |")
+    L.append("| Consistency | Total time | Median weekly time | Last 7 days | Last 30 days |")
     L.append("|:-:|:-:|:-:|:-:|:-:|")
     L.append(f"| **{s['consistency_pct']:.0f}%** | **{est_total:.0f}** h | **{aw['median']:.1f}** h "
              f"| **{week_est_min/60:.1f}** h | **{month_est_min/60:.1f}** h |")

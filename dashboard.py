@@ -618,9 +618,6 @@ h2{font-size:16px;font-weight:700;color:var(--ink);margin:0 0 14px}
 .mom .big{font-size:20px;font-weight:700;margin-top:3px;color:var(--ink)}
 .mom .big .unit{font-size:12px;font-weight:400;color:var(--muted)}
 
-.highlights p{margin:0 0 8px;font-size:14px}
-.highlights b{color:var(--ink)}
-
 table{border-collapse:collapse;width:100%;margin-top:6px;font-size:13px;
   font-variant-numeric:tabular-nums}
 th,td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--border)}
@@ -713,35 +710,6 @@ def momentum_block(df: pd.DataFrame) -> str:
     return f'<div class="mom">{"".join(cards)}</div>'
 
 
-def highlights_block(df: pd.DataFrame) -> str:
-    bd = A.best_day(df)
-    bw = A.best_week(df)
-    top = sorted(bd["skills"].items(), key=lambda kv: -bd["skills_est"][kv[0]])
-    parts_txt = ", ".join(f"{esc(s)} {fmt(v)} {esc(UNIT[s])}" for s, v in top)
-    p1 = (f'<p><b>Best day</b> — {bd["date"]:%d %b %Y}, {bd["est_minutes"]/60:.1f}h '
-          f'({parts_txt})</p>')
-    p2 = (f'<p><b>Best week</b> — week of {bw["week_start"]:%d %b %Y}, '
-          f'{bw["est_minutes"]/60:.1f}h</p>')
-    return f'<div class="highlights">{p1}{p2}</div>'
-
-
-def last_practiced_table(df: pd.DataFrame) -> str:
-    lp = A.last_practiced(df)
-    rows = []
-    for s in SKILLS:
-        r = lp.loc[s]
-        if r["last_date"] is None:
-            rows.append(f'<tr><td>{esc(s)}</td><td colspan="2">no activity yet</td></tr>')
-            continue
-        since = r["days_since"]
-        when = "today" if since == 0 else ("yesterday" if since == 1 else f"{int(since)} days ago")
-        rows.append(f'<tr><td>{esc(s)}</td><td>{r["last_date"]:%d %b %Y}</td><td>{when}</td></tr>')
-    return (
-        '<table><thead><tr><th>Skill</th><th>Last practiced</th><th></th></tr></thead>'
-        f'<tbody>{"".join(rows)}</tbody></table>'
-    )
-
-
 def weekly_table(df: pd.DataFrame) -> str:
     wk = A.weekly(df)
     head = "".join(f"<th>{s}</th>" for s in SKILLS)
@@ -779,15 +747,15 @@ def page_body(df: pd.DataFrame) -> str:
 
     tiles = [
         ("Consistency", f'{s["consistency_pct"]:.0f}%', f'{s["active_days"]} of {s["tracked_days"]} days'),
-        ("Total time", f"{est_hours:.0f}h", f"{total_hours:.0f}h logged · rest estimated"),
-        ("Typical weekly time", f'{aw["median"]:.1f}h',
-         f'median · {aw["min"]:.1f}–{aw["max"]:.1f}h range · {aw["n_weeks"]} weeks'),
-        ("Last 7 days", f"{week_est_min/60:.1f}h", f"{week_est_min/7:.0f} min/day avg"),
-        ("Last 30 days", f"{month_est_min/60:.1f}h", f"{month_est_min/month_days:.0f} min/day avg"),
+        ("Total time", f"{est_hours:.0f}h", ""),
+        ("Median weekly time", f'{aw["median"]:.1f}h', ""),
+        ("Last 7 days", f"{week_est_min/60:.1f}h", f"{week_est_min/7:.0f} min/day"),
+        ("Last 30 days", f"{month_est_min/60:.1f}h", f"{month_est_min/month_days:.0f} min/day"),
     ]
     tile_html = "".join(
-        f'<div class="stat"><div class="lab">{esc(l)}</div>'
-        f'<div class="val">{esc(v)}</div><div class="sub">{esc(sub)}</div></div>'
+        f'<div class="stat"><div class="lab">{esc(l)}</div><div class="val">{esc(v)}</div>'
+        + (f'<div class="sub">{esc(sub)}</div>' if sub else "")
+        + "</div>"
         for l, v, sub in tiles
     )
 
@@ -878,13 +846,6 @@ def page_body(df: pd.DataFrame) -> str:
 <section>
   <h2>Last 7 days</h2>
   {momentum_block(df)}
-</section>
-
-<section>
-  <h2>Highlights</h2>
-  {highlights_block(df)}
-  {last_practiced_table(df)}
-  <p class="cap">Days since each skill was last touched.</p>
 </section>
 
 <section>
