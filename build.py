@@ -68,6 +68,7 @@ def stats_markdown(df) -> str:
     logged = t["hours"].dropna().sum()
     week_est_min = float(A.estimated_minutes(df).iloc[-7:].sum().sum())
     month_est_min = float(A.estimated_minutes(df).iloc[-30:].sum().sum())
+    aw = A.avg_weekly_hours(df)
     start, end = df.index[0].date(), df.index[-1].date()
     updated = dt.datetime.now(dt.timezone.utc).strftime("%d %b %Y, %H:%M UTC")
 
@@ -77,9 +78,9 @@ def stats_markdown(df) -> str:
     L.append("")
 
     # compact summary strip
-    L.append("| Consistency | Total time | Last 7 days | Last 30 days |")
-    L.append("|:-:|:-:|:-:|:-:|")
-    L.append(f"| **{s['consistency_pct']:.0f}%** | **{est_total:.0f}** h "
+    L.append("| Consistency | Total time | Avg weekly time | Last 7 days | Last 30 days |")
+    L.append("|:-:|:-:|:-:|:-:|:-:|")
+    L.append(f"| **{s['consistency_pct']:.0f}%** | **{est_total:.0f}** h | **{aw['mean']:.1f}** h "
              f"| **{week_est_min/60:.1f}** h | **{month_est_min/60:.1f}** h |")
     L.append("")
 
