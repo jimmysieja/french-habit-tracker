@@ -324,6 +324,69 @@ def day_of_week(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def monthly(df: pd.DataFrame) -> pd.DataFrame:
+    """Skill totals per calendar month, labelled by the 1st of the month."""
+    mo = df[SKILLS].resample("MS").sum()
+    mo.index.name = "Month"
+    return mo
+
+
+def monthly_hours(df: pd.DataFrame) -> pd.Series:
+    """Estimated study hours (all six skills) per calendar month."""
+    mo = monthly(df)
+    return estimated_minutes(mo).sum(axis=1) / 60.0
+
+
+def cumulative_hours(df: pd.DataFrame) -> pd.Series:
+    """Running total of estimated study hours, day by day."""
+    return df["est_minutes"].cumsum() / 60.0
+
+
+def consistency_by_month(df: pd.DataFrame) -> pd.DataFrame:
+    """Share of days active within each calendar month."""
+    g = df["active"].resample("MS")
+    out = pd.DataFrame({"active_days": g.sum(), "total_days": g.count()})
+    out["pct"] = 100 * out["active_days"] / out["total_days"]
+    return out
+
+
+def best_day(df: pd.DataFrame) -> dict:
+    """The single highest-estimated-minutes day, and what made it up.
+
+    `skills` holds the raw per-skill values (for display in their natural
+    unit); `skills_est` holds the same skills' minute-equivalents, so callers
+    can rank contributions on a common footing instead of by raw unit size.
+    """
+    idx = df["est_minutes"].idxmax()
+    row = df.loc[idx]
+    est = estimated_minutes(df).loc[idx]
+    skills = {s: row[s] for s in SKILLS if row[s] > 0}
+    skills_est = {s: est[s] for s in SKILLS if row[s] > 0}
+    return {"date": idx, "est_minutes": row["est_minutes"], "skills": skills, "skills_est": skills_est}
+
+
+def best_week(df: pd.DataFrame) -> dict:
+    """The Monday-starting week with the highest estimated total."""
+    wk = df["est_minutes"].resample("W-SUN").sum()
+    wk.index = wk.index - pd.Timedelta(days=6)
+    idx = wk.idxmax()
+    return {"week_start": idx, "est_minutes": wk.loc[idx]}
+
+
+def last_practiced(df: pd.DataFrame) -> pd.DataFrame:
+    """Most recent date each skill was touched, and days since."""
+    last_day = df.index[-1]
+    rows = {}
+    for s in SKILLS:
+        touched = df.index[df[s] > 0]
+        last = touched[-1] if len(touched) else None
+        rows[s] = {
+            "last_date": last,
+            "days_since": (last_day - last).days if last is not None else None,
+        }
+    return pd.DataFrame(rows).T
+
+
 # --------------------------------------------------------------------------- #
 # reporting
 # --------------------------------------------------------------------------- #

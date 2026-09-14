@@ -9,11 +9,11 @@ same data, interactive.
 
 <!-- STATS:START -->
 
-<sub>Updated 13 Sep 2026, 09:35 UTC &nbsp;·&nbsp; 104 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 12 Sep 2026</sub>
+<sub>Updated 14 Sep 2026, 04:11 UTC &nbsp;·&nbsp; 105 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 13 Sep 2026</sub>
 
-| Current streak | Longest streak | Consistency | Total time |
+| Consistency | Total time | Last 7 days | Last 30 days |
 |:-:|:-:|:-:|:-:|
-| **27** days | **47** days | **96%** | **108** h |
+| **96%** | **109** h | **5.8** h | **31.4** h |
 
 ## Study calendar
 
@@ -25,15 +25,15 @@ same data, interactive.
 
 ## By skill
 
-| Skill | Total | Time | Days practised |
+| Skill | Total | Time | Days practiced |
 |:--|--:|--:|--:|
-| Listening | 3,453 min | 57.5 h | 81 (78%) |
+| Listening | 3,499 min | 58.3 h | 82 (78%) |
 | Grammar | 235 quizzes | 19.6 h | 66 (63%) |
-| Vocab | 6,631 cards | 9.2 h | 57 (55%) |
+| Vocab | 6,691 cards | 9.3 h | 58 (55%) |
 | Reading | 375 min | 6.2 h | 16 (15%) |
 | Writing | 12 prompts | 5.0 h | 9 (9%) |
 | Speaking | 635 min | 10.6 h | 26 (25%) |
-| **Total** | | **108 h** | |
+| **Total** | | **109 h** | |
 
 ## 7-day rolling trend
 
@@ -53,9 +53,9 @@ same data, interactive.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/skills-dark.svg">
-  <img alt="Share of days each skill was practised" src="assets/skills-light.svg" width="100%">
+  <img alt="Share of days each skill was practiced" src="assets/skills-light.svg" width="100%">
 </picture>
-<sub>Bar = share of days practised.</sub>
+<sub>Bar = share of days practiced.</sub>
 
 ## Where the time goes
 
@@ -73,16 +73,16 @@ same data, interactive.
 
 ## Last 7 days
 
-| Skill | Last 7 days | vs. previous 7 |
-|:--|--:|:--|
-| Listening | 151 min | -50% |
-| Grammar | 20 quizzes | +11% |
-| Vocab | 750 cards | -2% |
-| Reading | 20 min | -56% |
-| Writing | 0 prompts | -100% |
-| Speaking | 0 min | -100% |
+| Skill | Last 7 days |
+|:--|--:|
+| Listening | 188 min |
+| Grammar | 19 quizzes |
+| Vocab | 810 cards |
+| Reading | 0 min |
+| Writing | 0 prompts |
+| Speaking | 0 min |
 
-<sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 25min/prompt. 74 h of that is logged directly.</sub>
+<sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 25min/prompt. 75 h of that is logged directly.</sub>
 
 <!-- STATS:END -->
 

@@ -66,9 +66,10 @@ def stats_markdown(df) -> str:
     m = A.momentum(df)
     est_total = t["est_hours"].sum()
     logged = t["hours"].dropna().sum()
+    week_est_min = float(A.estimated_minutes(df).iloc[-7:].sum().sum())
+    month_est_min = float(A.estimated_minutes(df).iloc[-30:].sum().sum())
     start, end = df.index[0].date(), df.index[-1].date()
     updated = dt.datetime.now(dt.timezone.utc).strftime("%d %b %Y, %H:%M UTC")
-    longest = s["longest"][2] if s["longest"] else 0
 
     L: list[str] = []
     L.append(f"<sub>Updated {updated} &nbsp;·&nbsp; {len(df)} days tracked &nbsp;·&nbsp; "
@@ -76,10 +77,10 @@ def stats_markdown(df) -> str:
     L.append("")
 
     # compact summary strip
-    L.append("| Current streak | Longest streak | Consistency | Total time |")
+    L.append("| Consistency | Total time | Last 7 days | Last 30 days |")
     L.append("|:-:|:-:|:-:|:-:|")
-    L.append(f"| **{s['current']}** days | **{longest}** days "
-             f"| **{s['consistency_pct']:.0f}%** | **{est_total:.0f}** h |")
+    L.append(f"| **{s['consistency_pct']:.0f}%** | **{est_total:.0f}** h "
+             f"| **{week_est_min/60:.1f}** h | **{month_est_min/60:.1f}** h |")
     L.append("")
 
     L.append("## Study calendar")
@@ -92,7 +93,7 @@ def stats_markdown(df) -> str:
 
     L.append("## By skill")
     L.append("")
-    L.append("| Skill | Total | Time | Days practised |")
+    L.append("| Skill | Total | Time | Days practiced |")
     L.append("|:--|--:|--:|--:|")
     for sk in A.SKILLS:
         r = t.loc[sk]
@@ -115,8 +116,8 @@ def stats_markdown(df) -> str:
 
     L.append("## Skill balance")
     L.append("")
-    L.append(_picture("skills", "Share of days each skill was practised"))
-    L.append("<sub>Bar = share of days practised.</sub>")
+    L.append(_picture("skills", "Share of days each skill was practiced"))
+    L.append("<sub>Bar = share of days practiced.</sub>")
     L.append("")
 
     L.append("## Where the time goes")
@@ -131,13 +132,11 @@ def stats_markdown(df) -> str:
 
     L.append("## Last 7 days")
     L.append("")
-    L.append("| Skill | Last 7 days | vs. previous 7 |")
-    L.append("|:--|--:|:--|")
+    L.append("| Skill | Last 7 days |")
+    L.append("|:--|--:|")
     for sk in A.SKILLS:
         r = m.loc[sk]
-        wow = r["wow_change_pct"]
-        delta = "—" if wow != wow else (("+" if wow >= 0 else "") + f"{wow:.0f}%")
-        L.append(f"| {sk} | {r['last_7d_total']:,.0f} {A.UNIT[sk]} | {delta} |")
+        L.append(f"| {sk} | {r['last_7d_total']:,.0f} {A.UNIT[sk]} |")
     L.append("")
     L.append(
         f"<sub>Total time converts counts to minutes: "
