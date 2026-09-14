@@ -45,12 +45,9 @@ A tab named **📅Daily Log**, header in row 1:
 Dates like `01 Jun 2026`. Blank cell = 0. Weeks start Monday. Rows after the last
 real entry are ignored, so you can pre-fill dates.
 
-Optional **🎯 Weekly Objectives** tab (`Week Starting` + one column per skill)
-turns on the objective-attainment views. Optional **📈 Analytics** tab receives
-the `analytics.py --push` summary block.
+Optional **📈 Analytics** tab receives the `analytics.py --push` summary block.
 
-If your tab names differ, override `FR_DAILY_TAB` / `FR_OBJECTIVES_TAB` /
-`FR_ANALYTICS_TAB` in `.env`.
+If your tab names differ, override `FR_DAILY_TAB` / `FR_ANALYTICS_TAB` in `.env`.
 
 ## 5. Run it
 

@@ -9,11 +9,11 @@ same data, interactive.
 
 <!-- STATS:START -->
 
-<sub>Updated 01 Sep 2026, 09:27 UTC &nbsp;·&nbsp; 89 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 28 Aug 2026</sub>
+<sub>Updated 14 Sep 2026, 09:56 UTC &nbsp;·&nbsp; 105 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 13 Sep 2026</sub>
 
-| Current streak | Longest streak | Consistency | Total time |
-|:-:|:-:|:-:|:-:|
-| **12** days | **47** days | **96%** | **92** h |
+| Consistency | Total time | Median weekly time | Last 7 days | Last 30 days |
+|:-:|:-:|:-:|:-:|:-:|
+| **96%** | **109** h | **8.0** h | **6.2** h | **31.7** h |
 
 ## Study calendar
 
@@ -25,15 +25,15 @@ same data, interactive.
 
 ## By skill
 
-| Skill | Total | Time | Days practised | Weeks on target |
-|:--|--:|--:|--:|--:|
-| Listening | 3,000 min | 50.0 h | 68 (76%) | 75% |
-| Grammar | 197 quizzes | 16.4 h | 55 (62%) | 25% |
-| Vocab | 4,878 cards | 6.8 h | 45 (51%) | 33% |
-| Reading | 310 min | 5.2 h | 14 (16%) | 8% |
-| Writing | 10 prompts | 4.2 h | 7 (8%) | 17% |
-| Speaking | 595 min | 9.9 h | 23 (26%) | 50% |
-| **Total** | | **92 h** | | |
+| Skill | Total | Time | Days practiced |
+|:--|--:|--:|--:|
+| Listening | 3,499 min | 58.3 h | 82 (78%) |
+| Grammar | 239 quizzes | 19.9 h | 67 (64%) |
+| Vocab | 6,691 cards | 9.3 h | 58 (55%) |
+| Reading | 375 min | 6.2 h | 16 (15%) |
+| Writing | 12 prompts | 5.0 h | 9 (9%) |
+| Speaking | 635 min | 10.6 h | 26 (25%) |
+| **Total** | | **109 h** | |
 
 ## 7-day rolling trend
 
@@ -42,20 +42,20 @@ same data, interactive.
   <img alt="Seven-day rolling average per skill, whole period" src="assets/trend-light.svg" width="100%">
 </picture>
 
-## Weekly totals against objective
+## Weekly totals
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/objectives-dark.svg">
-  <img alt="Weekly totals per skill with the objective line" src="assets/objectives-light.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/weekly-dark.svg">
+  <img alt="Weekly totals per skill" src="assets/weekly-light.svg" width="100%">
 </picture>
 
 ## Skill balance
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/skills-dark.svg">
-  <img alt="Share of days each skill was practised" src="assets/skills-light.svg" width="100%">
+  <img alt="Share of days each skill was practiced" src="assets/skills-light.svg" width="100%">
 </picture>
-<sub>Bar = share of days practised. Tick = average weekly-objective attainment.</sub>
+<sub>Bar = share of days practiced.</sub>
 
 ## Where the time goes
 
@@ -73,16 +73,16 @@ same data, interactive.
 
 ## Last 7 days
 
-| Skill | Last 7 days | vs. previous 7 |
-|:--|--:|:--|
-| Listening | 289 min | +84% |
-| Grammar | 9 quizzes | — |
-| Vocab | 768 cards | +72% |
-| Reading | 0 min | — |
-| Writing | 1 prompts | -75% |
-| Speaking | 110 min | +83% |
+| Skill | Last 7 days |
+|:--|--:|
+| Listening | 188 min |
+| Grammar | 23 quizzes |
+| Vocab | 810 cards |
+| Reading | 0 min |
+| Writing | 0 prompts |
+| Speaking | 0 min |
 
-<sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 25min/prompt. 65 h of that is logged directly.</sub>
+<sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 25min/prompt. 75 h of that is logged directly.</sub>
 
 <!-- STATS:END -->
 
@@ -90,15 +90,13 @@ same data, interactive.
 
 A daily row per skill, in whatever unit is natural for it: minutes for
 listening / reading / speaking, quizzes for grammar, cards for vocab, prompts for
-writing. Weekly objectives sit alongside so I can see where I'm keeping pace and
-where I'm slipping. The "estimated time on French" figure rolls the counts back
-into minutes with rough conversion rates so all six skills compare on one axis.
+writing. The "estimated time on French" figure rolls the counts back into minutes
+with rough conversion rates so all six skills compare on one axis.
 
 ## How it's built
 
 `analytics.py` pulls the sheet with [gspread](https://docs.gspread.org/) and does
-the maths (streaks, rolling trends, skill balance, objective attainment) in
-pandas. `dashboard.py` draws every chart as hand-written SVG — no chart library —
+the maths (streaks, rolling trends, skill balance) in pandas. `dashboard.py` draws every chart as hand-written SVG — no chart library —
 and emits both a standalone `index.html` and the light/dark `.svg` files embedded
 above. A GitHub Actions workflow runs `build.py` on a schedule, commits the
 refreshed stats, and redeploys the dashboard to GitHub Pages.
