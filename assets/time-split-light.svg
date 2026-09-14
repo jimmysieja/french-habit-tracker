@@ -1,4 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 96" width="100%" role="img" aria-label="Share of estimated study time across all six skills, largest first"><style>
+/* per-skill colour switch: set via a sk-* class on a wrapping element, read
+   by the mark rules below (falls back to the neutral accent on aggregate
+   charts that aren't scoped to one skill, e.g. the calendar or day-of-week) */
+.sk-listening{--pc:#ccc319}
+.sk-grammar{--pc:#358d35}
+.sk-vocab{--pc:#1fa4d6}
+.sk-reading{--pc:#7a49ca}
+.sk-writing{--pc:#d45489}
+.sk-speaking{--pc:#ce4646}
 .p-title{fill:#1a1a1a;font-size:12px;font-weight:700}
 .p-sub{fill:#666666;font-size:10px}
 .p-unit{fill:#666666;font-size:10px}
@@ -7,11 +16,11 @@
 .p-base{stroke:#e3e3e3;stroke-width:1}
 .p-tick{stroke:#e3e3e3;stroke-width:1}
 .p-xlab{fill:#666666;font-size:9px;text-anchor:middle}
-.p-line{fill:none;stroke:#3a6fd0;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-.p-area{fill:#3a6fd0;opacity:.12}
-.p-end{fill:#3a6fd0;stroke:#ffffff;stroke-width:2}
+.p-line{fill:none;stroke:var(--pc,#3a6fd0);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.p-area{fill:var(--pc,#3a6fd0);opacity:.12}
+.p-end{fill:var(--pc,#3a6fd0);stroke:#ffffff;stroke-width:2}
 .p-endlab{fill:#43454a;font-size:10px;text-anchor:end;font-weight:700}
-.b-bar{fill:#3a6fd0}
+.b-bar{fill:var(--pc,#3a6fd0)}
 .b-bar:hover{fill:#29508f;opacity:.9}
 .d-lab{fill:#666666;font-size:10px;text-anchor:middle}
 .d-val{fill:#43454a;font-size:10px;text-anchor:middle;font-weight:700}
@@ -22,8 +31,8 @@ rect:hover{opacity:.82}
 /* horizontal bars */
 .h-cat{fill:#1a1a1a;font-size:12px;text-anchor:end;dominant-baseline:middle}
 .h-track{fill:#e3e3e3;opacity:.5}
-.h-fill{fill:#3a6fd0}
+.h-fill{fill:var(--pc,#3a6fd0)}
 .h-val{fill:#43454a;font-size:11px;font-weight:700;dominant-baseline:middle}
 .ts-lab{fill:#1a1a1a;font-size:11px;font-weight:700}
 .ts-val{fill:#666666;font-size:11px}
-</style><rect x="0" y="0" width="100%" height="100%" fill="#ffffff"/><rect x="0.0" y="0" width="294.5" height="24" rx="3" fill="#3a6fd0"><title>Listening: 58.3 h (53%)</title></rect><rect x="296.5" y="0" width="99.3" height="24" rx="3" fill="#c1822f"><title>Grammar: 19.9 h (18%)</title></rect><rect x="397.7" y="0" width="51.8" height="24" rx="3" fill="#4f9d63"><title>Speaking: 10.6 h (10%)</title></rect><rect x="451.6" y="0" width="45.2" height="24" rx="3" fill="#3f9b8c"><title>Vocab: 9.3 h (8%)</title></rect><rect x="498.8" y="0" width="29.8" height="24" rx="3" fill="#b5534a"><title>Reading: 6.2 h (6%)</title></rect><rect x="530.6" y="0" width="23.4" height="24" rx="3" fill="#8067c2"><title>Writing: 5.0 h (5%)</title></rect><rect x="0.0" y="40" width="10" height="10" rx="2" fill="#3a6fd0"/><text class="ts-lab" x="15.0" y="49">Listening</text><text class="ts-val" x="15.0" y="62">53% · 58.3 h</text><rect x="186.7" y="40" width="10" height="10" rx="2" fill="#c1822f"/><text class="ts-lab" x="201.7" y="49">Grammar</text><text class="ts-val" x="201.7" y="62">18% · 19.9 h</text><rect x="373.3" y="40" width="10" height="10" rx="2" fill="#4f9d63"/><text class="ts-lab" x="388.3" y="49">Speaking</text><text class="ts-val" x="388.3" y="62">10% · 10.6 h</text><rect x="0.0" y="66" width="10" height="10" rx="2" fill="#3f9b8c"/><text class="ts-lab" x="15.0" y="75">Vocab</text><text class="ts-val" x="15.0" y="88">8% · 9.3 h</text><rect x="186.7" y="66" width="10" height="10" rx="2" fill="#b5534a"/><text class="ts-lab" x="201.7" y="75">Reading</text><text class="ts-val" x="201.7" y="88">6% · 6.2 h</text><rect x="373.3" y="66" width="10" height="10" rx="2" fill="#8067c2"/><text class="ts-lab" x="388.3" y="75">Writing</text><text class="ts-val" x="388.3" y="88">5% · 5.0 h</text></svg>
+</style><rect x="0" y="0" width="100%" height="100%" fill="#ffffff"/><rect x="0.0" y="0" width="294.5" height="24" rx="3" fill="#ccc319"><title>Listening: 58.3 h (53%)</title></rect><rect x="296.5" y="0" width="99.3" height="24" rx="3" fill="#358d35"><title>Grammar: 19.9 h (18%)</title></rect><rect x="397.7" y="0" width="51.8" height="24" rx="3" fill="#ce4646"><title>Speaking: 10.6 h (10%)</title></rect><rect x="451.6" y="0" width="45.2" height="24" rx="3" fill="#1fa4d6"><title>Vocab: 9.3 h (8%)</title></rect><rect x="498.8" y="0" width="29.8" height="24" rx="3" fill="#7a49ca"><title>Reading: 6.2 h (6%)</title></rect><rect x="530.6" y="0" width="23.4" height="24" rx="3" fill="#d45489"><title>Writing: 5.0 h (5%)</title></rect><rect x="0.0" y="40" width="10" height="10" rx="2" fill="#ccc319"/><text class="ts-lab" x="15.0" y="49">Listening</text><text class="ts-val" x="15.0" y="62">53% · 58.3 h</text><rect x="186.7" y="40" width="10" height="10" rx="2" fill="#358d35"/><text class="ts-lab" x="201.7" y="49">Grammar</text><text class="ts-val" x="201.7" y="62">18% · 19.9 h</text><rect x="373.3" y="40" width="10" height="10" rx="2" fill="#ce4646"/><text class="ts-lab" x="388.3" y="49">Speaking</text><text class="ts-val" x="388.3" y="62">10% · 10.6 h</text><rect x="0.0" y="66" width="10" height="10" rx="2" fill="#1fa4d6"/><text class="ts-lab" x="15.0" y="75">Vocab</text><text class="ts-val" x="15.0" y="88">8% · 9.3 h</text><rect x="186.7" y="66" width="10" height="10" rx="2" fill="#7a49ca"/><text class="ts-lab" x="201.7" y="75">Reading</text><text class="ts-val" x="201.7" y="88">6% · 6.2 h</text><rect x="373.3" y="66" width="10" height="10" rx="2" fill="#d45489"/><text class="ts-lab" x="388.3" y="75">Writing</text><text class="ts-val" x="388.3" y="88">5% · 5.0 h</text></svg>

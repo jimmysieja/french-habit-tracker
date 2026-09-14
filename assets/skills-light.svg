@@ -1,4 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 224" width="100%" role="img" aria-label="Share of days each skill was practiced"><style>
+/* per-skill colour switch: set via a sk-* class on a wrapping element, read
+   by the mark rules below (falls back to the neutral accent on aggregate
+   charts that aren't scoped to one skill, e.g. the calendar or day-of-week) */
+.sk-listening{--pc:#ccc319}
+.sk-grammar{--pc:#358d35}
+.sk-vocab{--pc:#1fa4d6}
+.sk-reading{--pc:#7a49ca}
+.sk-writing{--pc:#d45489}
+.sk-speaking{--pc:#ce4646}
 .p-title{fill:#1a1a1a;font-size:12px;font-weight:700}
 .p-sub{fill:#666666;font-size:10px}
 .p-unit{fill:#666666;font-size:10px}
@@ -7,11 +16,11 @@
 .p-base{stroke:#e3e3e3;stroke-width:1}
 .p-tick{stroke:#e3e3e3;stroke-width:1}
 .p-xlab{fill:#666666;font-size:9px;text-anchor:middle}
-.p-line{fill:none;stroke:#3a6fd0;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-.p-area{fill:#3a6fd0;opacity:.12}
-.p-end{fill:#3a6fd0;stroke:#ffffff;stroke-width:2}
+.p-line{fill:none;stroke:var(--pc,#3a6fd0);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.p-area{fill:var(--pc,#3a6fd0);opacity:.12}
+.p-end{fill:var(--pc,#3a6fd0);stroke:#ffffff;stroke-width:2}
 .p-endlab{fill:#43454a;font-size:10px;text-anchor:end;font-weight:700}
-.b-bar{fill:#3a6fd0}
+.b-bar{fill:var(--pc,#3a6fd0)}
 .b-bar:hover{fill:#29508f;opacity:.9}
 .d-lab{fill:#666666;font-size:10px;text-anchor:middle}
 .d-val{fill:#43454a;font-size:10px;text-anchor:middle;font-weight:700}
@@ -22,8 +31,8 @@ rect:hover{opacity:.82}
 /* horizontal bars */
 .h-cat{fill:#1a1a1a;font-size:12px;text-anchor:end;dominant-baseline:middle}
 .h-track{fill:#e3e3e3;opacity:.5}
-.h-fill{fill:#3a6fd0}
+.h-fill{fill:var(--pc,#3a6fd0)}
 .h-val{fill:#43454a;font-size:11px;font-weight:700;dominant-baseline:middle}
 .ts-lab{fill:#1a1a1a;font-size:11px;font-weight:700}
 .ts-val{fill:#666666;font-size:11px}
-</style><rect x="0" y="0" width="100%" height="100%" fill="#ffffff"/><text class="h-cat" x="86" y="27">Writing</text><rect class="h-track" x="96" y="14" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="14" width="34.6" height="18" rx="4"><title>Writing: practiced on 9% of days</title></rect><text class="h-val" x="136.6" y="27">9%</text><text class="h-cat" x="86" y="61">Reading</text><rect class="h-track" x="96" y="48" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="48" width="61.6" height="18" rx="4"><title>Reading: practiced on 15% of days</title></rect><text class="h-val" x="163.6" y="61">15%</text><text class="h-cat" x="86" y="95">Speaking</text><rect class="h-track" x="96" y="82" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="82" width="100.0" height="18" rx="4"><title>Speaking: practiced on 25% of days</title></rect><text class="h-val" x="202.0" y="95">25%</text><text class="h-cat" x="86" y="129">Vocab</text><rect class="h-track" x="96" y="116" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="116" width="223.2" height="18" rx="4"><title>Vocab: practiced on 55% of days</title></rect><text class="h-val" x="325.2" y="129">55%</text><text class="h-cat" x="86" y="163">Grammar</text><rect class="h-track" x="96" y="150" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="150" width="257.8" height="18" rx="4"><title>Grammar: practiced on 64% of days</title></rect><text class="h-val" x="359.8" y="163">64%</text><text class="h-cat" x="86" y="197">Listening</text><rect class="h-track" x="96" y="184" width="404" height="18" rx="4"/><rect class="h-fill" x="96" y="184" width="315.5" height="18" rx="4"><title>Listening: practiced on 78% of days</title></rect><text class="h-val" x="417.5" y="197">78%</text></svg>
+</style><rect x="0" y="0" width="100%" height="100%" fill="#ffffff"/><text class="h-cat" x="86" y="27">Writing</text><rect class="h-track" x="96" y="14" width="404" height="18" rx="4"/><rect class="h-fill sk-writing" x="96" y="14" width="34.6" height="18" rx="4"><title>Writing: practiced on 9% of days</title></rect><text class="h-val" x="136.6" y="27">9%</text><text class="h-cat" x="86" y="61">Reading</text><rect class="h-track" x="96" y="48" width="404" height="18" rx="4"/><rect class="h-fill sk-reading" x="96" y="48" width="61.6" height="18" rx="4"><title>Reading: practiced on 15% of days</title></rect><text class="h-val" x="163.6" y="61">15%</text><text class="h-cat" x="86" y="95">Speaking</text><rect class="h-track" x="96" y="82" width="404" height="18" rx="4"/><rect class="h-fill sk-speaking" x="96" y="82" width="100.0" height="18" rx="4"><title>Speaking: practiced on 25% of days</title></rect><text class="h-val" x="202.0" y="95">25%</text><text class="h-cat" x="86" y="129">Vocab</text><rect class="h-track" x="96" y="116" width="404" height="18" rx="4"/><rect class="h-fill sk-vocab" x="96" y="116" width="223.2" height="18" rx="4"><title>Vocab: practiced on 55% of days</title></rect><text class="h-val" x="325.2" y="129">55%</text><text class="h-cat" x="86" y="163">Grammar</text><rect class="h-track" x="96" y="150" width="404" height="18" rx="4"/><rect class="h-fill sk-grammar" x="96" y="150" width="257.8" height="18" rx="4"><title>Grammar: practiced on 64% of days</title></rect><text class="h-val" x="359.8" y="163">64%</text><text class="h-cat" x="86" y="197">Listening</text><rect class="h-track" x="96" y="184" width="404" height="18" rx="4"/><rect class="h-fill sk-listening" x="96" y="184" width="315.5" height="18" rx="4"><title>Listening: practiced on 78% of days</title></rect><text class="h-val" x="417.5" y="197">78%</text></svg>

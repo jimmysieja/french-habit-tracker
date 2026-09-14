@@ -1,4 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 267 167" width="100%" role="img" aria-label="Daily study calendar shaded by estimated minutes of study"><style>
+/* per-skill colour switch: set via a sk-* class on a wrapping element, read
+   by the mark rules below (falls back to the neutral accent on aggregate
+   charts that aren't scoped to one skill, e.g. the calendar or day-of-week) */
+.sk-listening{--pc:#f4ee7b}
+.sk-grammar{--pc:#8bd08b}
+.sk-vocab{--pc:#82d0ed}
+.sk-reading{--pc:#b498e1}
+.sk-writing{--pc:#e49ab9}
+.sk-speaking{--pc:#e08585}
 .p-title{fill:#e7e7e7;font-size:12px;font-weight:700}
 .p-sub{fill:#9b9b9b;font-size:10px}
 .p-unit{fill:#9b9b9b;font-size:10px}
@@ -7,11 +16,11 @@
 .p-base{stroke:#2c2e34;stroke-width:1}
 .p-tick{stroke:#2c2e34;stroke-width:1}
 .p-xlab{fill:#9b9b9b;font-size:9px;text-anchor:middle}
-.p-line{fill:none;stroke:#7ea9ec;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-.p-area{fill:#7ea9ec;opacity:.12}
-.p-end{fill:#7ea9ec;stroke:#15161a;stroke-width:2}
+.p-line{fill:none;stroke:var(--pc,#7ea9ec);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.p-area{fill:var(--pc,#7ea9ec);opacity:.12}
+.p-end{fill:var(--pc,#7ea9ec);stroke:#15161a;stroke-width:2}
 .p-endlab{fill:#c3c4c8;font-size:10px;text-anchor:end;font-weight:700}
-.b-bar{fill:#7ea9ec}
+.b-bar{fill:var(--pc,#7ea9ec)}
 .b-bar:hover{fill:#a9c6f5;opacity:.9}
 .d-lab{fill:#9b9b9b;font-size:10px;text-anchor:middle}
 .d-val{fill:#c3c4c8;font-size:10px;text-anchor:middle;font-weight:700}
@@ -22,7 +31,7 @@ rect:hover{opacity:.82}
 /* horizontal bars */
 .h-cat{fill:#e7e7e7;font-size:12px;text-anchor:end;dominant-baseline:middle}
 .h-track{fill:#2c2e34;opacity:.5}
-.h-fill{fill:#7ea9ec}
+.h-fill{fill:var(--pc,#7ea9ec)}
 .h-val{fill:#c3c4c8;font-size:11px;font-weight:700;dominant-baseline:middle}
 .ts-lab{fill:#e7e7e7;font-size:11px;font-weight:700}
 .ts-val{fill:#9b9b9b;font-size:11px}
