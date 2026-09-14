@@ -344,17 +344,22 @@ def weekly_hours(df: pd.DataFrame) -> pd.Series:
 
 
 def avg_weekly_hours(df: pd.DataFrame) -> dict:
-    """Mean estimated hours per week, over complete Monday-Sunday weeks only.
+    """Typical estimated hours per week, over complete Monday-Sunday weeks only.
 
     A currently in-progress trailing week (or a partial leading week, if
-    tracking didn't start on a Monday) would otherwise drag the average down
+    tracking didn't start on a Monday) would otherwise drag the figure down
     - excluding them gives a fairer read on the steady-state weekly pace.
+
+    Returns both `median` and `mean`: the median is what the dashboard leads
+    with, since a single unusually light or heavy week skews the mean but
+    barely moves the median - closer to "what a normal week looks like."
     """
     wh = weekly_hours(df)
     first_day, last_day = df.index[0], df.index[-1]
     complete = wh[(wh.index >= first_day) & (wh.index + pd.Timedelta(days=6) <= last_day)]
     used = complete if len(complete) else wh
     return {
+        "median": float(used.median()) if len(used) else 0.0,
         "mean": float(used.mean()) if len(used) else 0.0,
         "min": float(used.min()) if len(used) else 0.0,
         "max": float(used.max()) if len(used) else 0.0,

@@ -9,11 +9,11 @@ same data, interactive.
 
 <!-- STATS:START -->
 
-<sub>Updated 14 Sep 2026, 04:12 UTC &nbsp;·&nbsp; 105 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 13 Sep 2026</sub>
+<sub>Updated 14 Sep 2026, 04:27 UTC &nbsp;·&nbsp; 105 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 13 Sep 2026</sub>
 
-| Consistency | Total time | Avg weekly time | Last 7 days | Last 30 days |
+| Consistency | Total time | Typical weekly time | Last 7 days | Last 30 days |
 |:-:|:-:|:-:|:-:|:-:|
-| **96%** | **109** h | **7.3** h | **5.8** h | **31.4** h |
+| **96%** | **109** h | **8.0** h | **5.8** h | **31.4** h |
 
 ## Study calendar
 

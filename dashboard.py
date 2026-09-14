@@ -780,8 +780,8 @@ def page_body(df: pd.DataFrame) -> str:
     tiles = [
         ("Consistency", f'{s["consistency_pct"]:.0f}%', f'{s["active_days"]} of {s["tracked_days"]} days'),
         ("Total time", f"{est_hours:.0f}h", f"{total_hours:.0f}h logged · rest estimated"),
-        ("Avg weekly time", f'{aw["mean"]:.1f}h',
-         f'{aw["min"]:.1f}–{aw["max"]:.1f}h range · {aw["n_weeks"]} weeks'),
+        ("Typical weekly time", f'{aw["median"]:.1f}h',
+         f'median · {aw["min"]:.1f}–{aw["max"]:.1f}h range · {aw["n_weeks"]} weeks'),
         ("Last 7 days", f"{week_est_min/60:.1f}h", f"{week_est_min/7:.0f} min/day avg"),
         ("Last 30 days", f"{month_est_min/60:.1f}h", f"{month_est_min/month_days:.0f} min/day avg"),
     ]
