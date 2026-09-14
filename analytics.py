@@ -125,7 +125,28 @@ def load_daily_log(gc=None) -> pd.DataFrame:
     header, *rows = records
     raw = pd.DataFrame(rows, columns=[h.split("\n")[0].strip() for h in header])
 
-    raw["Date"] = pd.to_datetime(raw["Date"], format="%d %b %Y", errors="coerce")
+    # Parse the Date column tolerantly. get_all_values() hands back whatever
+    # string each cell *displays*, and that format can drift between rows
+    # ("29 Aug 2026" one day, "2026-08-29" or "8/30/2026" the next, depending on
+    # how the row was entered). A rigid `format=` silently coerces every
+    # mismatch to NaT and the row then vanishes in the dropna below - which is
+    # how a few days of real data can quietly disappear. So: try the usual
+    # format first, fall back to per-value inference for the stragglers, and
+    # shout about anything non-empty that still won't parse.
+    date_raw = raw["Date"].astype(str).str.strip()
+    parsed = pd.to_datetime(date_raw, format="%d %b %Y", errors="coerce")
+    leftover = parsed.isna() & date_raw.ne("")
+    if leftover.any():
+        parsed.loc[leftover] = pd.to_datetime(
+            date_raw[leftover], errors="coerce", format="mixed"
+        )
+    unparseable = sorted(set(date_raw[parsed.isna() & date_raw.ne("")]))
+    if unparseable:
+        print(
+            f"WARNING: load_daily_log skipped {len(unparseable)} unparseable "
+            f"Date cell(s): {unparseable}"
+        )
+    raw["Date"] = parsed
     raw = raw.dropna(subset=["Date"]).set_index("Date").sort_index()
 
     for s in SKILLS:
