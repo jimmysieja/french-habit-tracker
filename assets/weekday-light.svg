@@ -6,8 +6,8 @@
 .sk-grammar{--pc:#358d35}
 .sk-vocab{--pc:#1fa4d6}
 .sk-reading{--pc:#7a49ca}
-.sk-writing{--pc:#d45489}
-.sk-speaking{--pc:#ce4646}
+.sk-writing{--pc:#cd519f}
+.sk-speaking{--pc:#d05739}
 .p-title{fill:#1a1a1a;font-size:12px;font-weight:700}
 .p-sub{fill:#666666;font-size:10px}
 .p-unit{fill:#666666;font-size:10px}
