@@ -513,7 +513,7 @@ _TOK_LIGHT = (
     "--bg:#ffffff;--ink:#1a1a1a;--ink2:#43454a;--muted:#666666;--border:#e3e3e3;"
     "--link:#3a6fd0;--link-hover:#29508f;--accent:#3a6fd0;"
     "--sk-listening:#ccc319;--sk-grammar:#358d35;--sk-vocab:#1fa4d6;"
-    "--sk-reading:#7a49ca;--sk-writing:#d45489;--sk-speaking:#ce4646;"
+    "--sk-reading:#7a49ca;--sk-writing:#cd519f;--sk-speaking:#d05739;"
     "--heat-0:#edecea;--heat-1:#cfe0f5;--heat-2:#9dc0e9;--heat-3:#6693d4;--heat-4:#3a6fd0;"
     "--fr-blue:#3a6fd0;--fr-red:#b5534a;"
 )
@@ -521,7 +521,7 @@ _TOK_DARK = (
     "--bg:#15161a;--ink:#e7e7e7;--ink2:#c3c4c8;--muted:#9b9b9b;--border:#2c2e34;"
     "--link:#7ea9ec;--link-hover:#a9c6f5;--accent:#7ea9ec;"
     "--sk-listening:#f4ee7b;--sk-grammar:#8bd08b;--sk-vocab:#82d0ed;"
-    "--sk-reading:#b498e1;--sk-writing:#e49ab9;--sk-speaking:#e08585;"
+    "--sk-reading:#b498e1;--sk-writing:#db99c3;--sk-speaking:#de907c;"
     "--heat-0:#202126;--heat-1:#22334c;--heat-2:#2c4d75;--heat-3:#3f6ea3;--heat-4:#7ea9ec;"
     "--fr-blue:#7ea9ec;--fr-red:#d38178;"
 )
@@ -859,31 +859,6 @@ def page_body(df: pd.DataFrame) -> str:
 </section>
 
 <section>
-  <h2>Last 7 days</h2>
-  {momentum_block(df)}
-</section>
-
-<section>
-  <h2>Cumulative progress</h2>
-  <div class="frame">{cumulative_svg(df)}</div>
-</section>
-
-<section>
-  <h2>Trend — 7-day rolling average per skill</h2>
-  {trend_panels(df)}
-</section>
-
-<section>
-  <h2>Weekly totals</h2>
-  {weekly_panels(df)}
-</section>
-
-<section>
-  <h2>Monthly view</h2>
-  {monthly_panels(df)}
-</section>
-
-<section>
   <h2>Where the time goes</h2>
   <div class="frame">{timesplit_svg(df)}</div>
   <p class="cap">Counts converted to minutes: vocab {A.EST_MIN_PER_UNIT['Vocab']*60:.0f}s/card ·
@@ -892,13 +867,38 @@ def page_body(df: pd.DataFrame) -> str:
 </section>
 
 <section>
+  <h2>Weekly totals</h2>
+  {weekly_panels(df)}
+</section>
+
+<section>
+  <h2>Trend — 7-day rolling average per skill</h2>
+  {trend_panels(df)}
+</section>
+
+<section>
   <h2>Skill balance — share of days practiced</h2>
   <div class="frame">{balance_svg(df)}</div>
 </section>
 
 <section>
+  <h2>Monthly view</h2>
+  {monthly_panels(df)}
+</section>
+
+<section>
+  <h2>Last 7 days</h2>
+  {momentum_block(df)}
+</section>
+
+<section>
   <h2>Average minutes by day of week</h2>
   <div class="frame">{dow_svg(df)}</div>
+</section>
+
+<section>
+  <h2>Cumulative progress</h2>
+  <div class="frame">{cumulative_svg(df)}</div>
 </section>
 
 <details><summary>All the numbers</summary>
