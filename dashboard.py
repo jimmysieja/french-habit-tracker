@@ -859,11 +859,8 @@ def page_body(df: pd.DataFrame) -> str:
 </section>
 
 <section>
-  <h2>Where the time goes</h2>
-  <div class="frame">{timesplit_svg(df)}</div>
-  <p class="cap">Counts converted to minutes: vocab {A.EST_MIN_PER_UNIT['Vocab']*60:.0f}s/card ·
-  grammar {A.EST_MIN_PER_UNIT['Grammar']:.0f}min/lesson ·
-  writing {A.EST_MIN_PER_UNIT['Writing']:.0f}min/prompt.</p>
+  <h2>Last 7 days</h2>
+  {momentum_block(df)}
 </section>
 
 <section>
@@ -877,6 +874,14 @@ def page_body(df: pd.DataFrame) -> str:
 </section>
 
 <section>
+  <h2>Where the time goes</h2>
+  <div class="frame">{timesplit_svg(df)}</div>
+  <p class="cap">Counts converted to minutes: vocab {A.EST_MIN_PER_UNIT['Vocab']*60:.0f}s/card ·
+  grammar {A.EST_MIN_PER_UNIT['Grammar']:.0f}min/lesson ·
+  writing {A.EST_MIN_PER_UNIT['Writing']:.0f}min/prompt.</p>
+</section>
+
+<section>
   <h2>Skill balance — share of days practiced</h2>
   <div class="frame">{balance_svg(df)}</div>
 </section>
@@ -884,11 +889,6 @@ def page_body(df: pd.DataFrame) -> str:
 <section>
   <h2>Monthly view</h2>
   {monthly_panels(df)}
-</section>
-
-<section>
-  <h2>Last 7 days</h2>
-  {momentum_block(df)}
 </section>
 
 <section>
