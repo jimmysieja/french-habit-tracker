@@ -15,6 +15,7 @@ Re-run it whenever you want the latest picture - it always reflects the sheet.
 from __future__ import annotations
 
 import os
+import re
 import sys
 import html
 import math
@@ -31,6 +32,24 @@ SKILLS = A.SKILLS
 UNIT = A.UNIT
 TIME_SKILLS = A.TIME_SKILLS
 
+# --------------------------------------------------------------------------- #
+# Personal blurb shown at the top of the dashboard, under the header. Edit the
+# text below to describe your French background and the materials/resources
+# you use - separate paragraphs with a blank line. Re-run `python dashboard.py`
+# (or `python build.py`) afterwards to regenerate the page.
+# --------------------------------------------------------------------------- #
+ABOUT_TEXT = """Prior to learning French seriously, my foundation consisted of French I, II, and III
+in high school (shoutout Mme Mooney) and a 450-day Duolingo streak starting summer 2024.
+
+For listening practice, I'm currently using French-language podcasts such as *InnerFrench* and
+*Little Talk in Slow French*, complemented by *L'After Foot* (a footy talk show) and
+miscellaneous YouTube videos featuring more natural French. For vocabulary, I use
+Anki flashcards, and for grammar, KwizIQ. I'm also (slowly) reading *Jaune : histoire d'une
+couleur* by Michel Pastoureau, which discusses the cultural, social, and artistic history of the
+color yellow from ancient times to today. For writing, I answer miscellaneous prompts, trying to vary
+tenses and incorporate recently learned words and phrases. My speaking practice so far has come from
+conversations with colleagues who are also learning French, general shadowing, AI chatbots, and a few Italki
+lessons."""
 
 # --------------------------------------------------------------------------- #
 # tiny svg / formatting helpers
@@ -202,13 +221,32 @@ def trend_panels(df: pd.DataFrame) -> str:
 # --------------------------------------------------------------------------- #
 def weekly_panels(df: pd.DataFrame) -> str:
     wk = A.weekly(df)
-    out = [_bars_panel(s, f"weekly {UNIT[s]}", wk[s].to_numpy(dtype=float)) for s in SKILLS]
+    out = [_bars_panel(s, f"weekly {UNIT[s]}", wk[s].to_numpy(dtype=float), wk.index) for s in SKILLS]
     return f'<div class="grid">{"".join(out)}</div>'
 
 
-def _bars_panel(title: str, sub: str, vals: np.ndarray) -> str:
+def _month_ticks_weekly(dates: pd.DatetimeIndex) -> list[tuple[int, str]]:
+    """(bar position, month label) at the first week starting in each new month.
+
+    Skips a tick that lands within 2 bars of the previous one - which only
+    happens for the very first couple of weeks when the series starts near a
+    month boundary - so the labels never overlap.
+    """
+    out = []
+    last_mo = None
+    for i, d in enumerate(dates):
+        if d.month != last_mo:
+            if out and i - out[-1][0] < 2:
+                out[-1] = (i, f"{d:%b}")
+            else:
+                out.append((i, f"{d:%b}"))
+            last_mo = d.month
+    return out
+
+
+def _bars_panel(title: str, sub: str, vals: np.ndarray, dates: pd.DatetimeIndex | None = None) -> str:
     W, H = 340, 140
-    ml, mr, mt, mb = 10, 10, 30, 18
+    ml, mr, mt, mb = 10, 10, 30, 22
     n = len(vals)
     ymax = vals.max() * 1.15 or 1
     slot = (W - ml - mr) / n
@@ -224,13 +262,21 @@ def _bars_panel(title: str, sub: str, vals: np.ndarray) -> str:
             f'<rect class="b-bar" x="{x:.1f}" y="{yv:.1f}" width="{bw:.1f}" '
             f'height="{max(0, y0-yv):.1f}" rx="3"><title>{fmt(v)}</title></rect>'
         )
+
+    ticks = []
+    if dates is not None:
+        for pos, lab in _month_ticks_weekly(dates):
+            x = ml + pos * slot + slot / 2
+            ticks.append(f'<line class="p-tick" x1="{x:.1f}" y1="{y0:.1f}" x2="{x:.1f}" y2="{y0+4:.1f}"/>')
+            ticks.append(f'<text class="p-xlab" x="{x:.1f}" y="{H-6}">{lab}</text>')
+
     return (
         f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" class="sk-{title.lower()}" '
         f'aria-label="{esc(title)} {esc(sub)}">'
         f'<text class="p-title" x="{ml}" y="13">{esc(title)}</text>'
         f'<text class="p-sub" x="{ml}" y="25">{esc(sub)}</text>'
         f'<line class="p-base" x1="{ml}" y1="{y0}" x2="{W-mr}" y2="{y0}"/>'
-        f'{"".join(bars)}</svg>'
+        f'{"".join(bars)}{"".join(ticks)}</svg>'
     )
 
 
@@ -609,6 +655,10 @@ section{margin-top:40px}
 h2{font-size:16px;font-weight:700;color:var(--ink);margin:0 0 14px}
 .cap{font-size:12px;color:var(--muted);margin:10px 0 0}
 
+.about{margin-top:26px;color:var(--ink2);font-size:14px}
+.about p{margin:0 0 10px}
+.about p:last-child{margin-bottom:0}
+
 .frame{border:1px solid var(--border);border-radius:6px;padding:20px}
 
 .stats{display:flex;flex-wrap:wrap;gap:26px 40px;padding:20px 0;
@@ -744,6 +794,19 @@ def monthly_table(df: pd.DataFrame) -> str:
     return f"<table><thead><tr><th>Month</th>{head}</tr></thead><tbody>{''.join(body)}</tbody></table>"
 
 
+_ITALIC_RE = re.compile(r"\*([^*]+)\*")
+
+
+def about_block(text: str) -> str:
+    """Plain-text paragraphs (blank line = new paragraph, *word* = italics)."""
+    paras = [p.strip() for p in text.strip().split("\n\n") if p.strip()]
+    out = []
+    for p in paras:
+        body = _ITALIC_RE.sub(r"<em>\1</em>", esc(" ".join(p.split())))
+        out.append(f"<p>{body}</p>")
+    return "".join(out)
+
+
 def page_body(df: pd.DataFrame) -> str:
     """The <title> + <style> + content, with no document skeleton.
 
@@ -849,6 +912,8 @@ def page_body(df: pd.DataFrame) -> str:
 </div></header>
 
 <main class="wrap">
+
+<section class="about">{about_block(ABOUT_TEXT)}</section>
 
 <section><div class="stats">{tile_html}</div></section>
 
