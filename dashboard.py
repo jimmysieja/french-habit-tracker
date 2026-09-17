@@ -38,8 +38,10 @@ TIME_SKILLS = A.TIME_SKILLS
 # you use - separate paragraphs with a blank line. Re-run `python dashboard.py`
 # (or `python build.py`) afterwards to regenerate the page.
 # --------------------------------------------------------------------------- #
-ABOUT_TEXT = """Prior to learning French seriously, my foundation consisted of French I, II, and III
-in high school (shoutout Mme Mooney) and a 450-day Duolingo streak starting summer 2024. For listening practice, 
+ABOUT_TEXT = """Prior to June 1, when I decided to start taking French more seriously, my foundation consisted of French I, II, and III
+in high school (shoutout Mme Mooney) and a 450-day Duolingo streak starting summer 2024.
+Since then, I've tried to build a more well-rounded approach to learning the language.
+
 I'm currently using French-language podcasts such as *InnerFrench* and
 *Little Talk in Slow French*, complemented by *L'After Foot* (a footy talk show) and
 miscellaneous YouTube videos featuring more natural French. For vocabulary, I use
@@ -912,7 +914,10 @@ def page_body(df: pd.DataFrame) -> str:
 
 <main class="wrap">
 
-<section class="about">{about_block(ABOUT_TEXT)}</section>
+<section class="about">
+  <h2>Background</h2>
+  {about_block(ABOUT_TEXT)}
+</section>
 
 <section><div class="stats">{tile_html}</div></section>
 
