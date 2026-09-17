@@ -39,9 +39,8 @@ TIME_SKILLS = A.TIME_SKILLS
 # (or `python build.py`) afterwards to regenerate the page.
 # --------------------------------------------------------------------------- #
 ABOUT_TEXT = """Prior to learning French seriously, my foundation consisted of French I, II, and III
-in high school (shoutout Mme Mooney) and a 450-day Duolingo streak starting summer 2024.
-
-For listening practice, I'm currently using French-language podcasts such as *InnerFrench* and
+in high school (shoutout Mme Mooney) and a 450-day Duolingo streak starting summer 2024. For listening practice, 
+I'm currently using French-language podcasts such as *InnerFrench* and
 *Little Talk in Slow French*, complemented by *L'After Foot* (a footy talk show) and
 miscellaneous YouTube videos featuring more natural French. For vocabulary, I use
 Anki flashcards, and for grammar, KwizIQ. I'm also (slowly) reading *Jaune : histoire d'une
