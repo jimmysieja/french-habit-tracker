@@ -78,7 +78,7 @@ Edit `EST_MIN_PER_UNIT` in `analytics.py`:
 |---|---|
 | Vocab | 5 seconds / card |
 | Grammar | 5 minutes / lesson |
-| Writing | 25 minutes / prompt |
+| Writing | 15 minutes / prompt |
 | Listening / Reading / Speaking | already minutes |
 
 ## Files

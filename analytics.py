@@ -83,13 +83,13 @@ COUNT_SKILLS = [s for s in SKILLS if s not in TIME_SKILLS]
 # Deliberately approximate - tune these to taste.
 #   vocab   : ~5 seconds per Anki card          (300 cards ~ 25 min)
 #   grammar : ~5 minutes per lesson / quiz
-#   writing : ~25 minutes per prompt             (drafting + reviewing)
+#   writing : ~15 minutes per prompt             (drafting + reviewing)
 EST_MIN_PER_UNIT = {
     "Listening": 1.0,
     "Grammar": 5.0,
     "Vocab": 5.0 / 60.0,
     "Reading": 1.0,
-    "Writing": 25.0,
+    "Writing": 15.0,
     "Speaking": 1.0,
 }
 
