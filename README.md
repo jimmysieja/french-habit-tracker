@@ -9,11 +9,11 @@ same data, interactive.
 
 <!-- STATS:START -->
 
-<sub>Updated 26 Oct 2026, 17:13 UTC &nbsp;·&nbsp; 148 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 26 Oct 2026</sub>
+<sub>Updated 27 Oct 2026, 09:52 UTC &nbsp;·&nbsp; 148 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 26 Oct 2026</sub>
 
 | Consistency | Total time | Median weekly time | Last 7 days | Last 30 days |
 |:-:|:-:|:-:|:-:|:-:|
-| **96%** | **153** h | **7.3** h | **8.2** h | **29.6** h |
+| **96%** | **153** h | **7.3** h | **8.5** h | **29.8** h |
 
 ## Study calendar
 
@@ -29,7 +29,7 @@ same data, interactive.
 |:--|--:|--:|--:|
 | Listening | 4,923 min | 82.0 h | 121 (82%) |
 | Grammar | 392 quizzes | 32.7 h | 94 (64%) |
-| Vocab | 9,976 cards | 13.9 h | 84 (57%) |
+| Vocab | 10,174 cards | 14.1 h | 85 (57%) |
 | Reading | 515 min | 8.6 h | 28 (19%) |
 | Writing | 17 prompts | 4.2 h | 14 (9%) |
 | Speaking | 695 min | 11.6 h | 32 (22%) |
@@ -77,7 +77,7 @@ same data, interactive.
 |:--|--:|
 | Listening | 278 min |
 | Grammar | 16 quizzes |
-| Vocab | 215 cards |
+| Vocab | 413 cards |
 | Reading | 50 min |
 | Writing | 2 prompts |
 | Speaking | 35 min |
