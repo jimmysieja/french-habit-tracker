@@ -9,11 +9,11 @@ same data, interactive.
 
 <!-- STATS:START -->
 
-<sub>Updated 28 Oct 2026, 10:38 UTC &nbsp;·&nbsp; 149 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 27 Oct 2026</sub>
+<sub>Updated 29 Oct 2026, 10:56 UTC &nbsp;·&nbsp; 150 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 28 Oct 2026</sub>
 
 | Consistency | Total time | Median weekly time | Last 7 days | Last 30 days |
 |:-:|:-:|:-:|:-:|:-:|
-| **96%** | **155** h | **7.3** h | **8.9** h | **30.9** h |
+| **96%** | **156** h | **7.3** h | **7.8** h | **30.9** h |
 
 ## Study calendar
 
@@ -27,13 +27,13 @@ same data, interactive.
 
 | Skill | Total | Time | Days practiced |
 |:--|--:|--:|--:|
-| Listening | 4,988 min | 83.1 h | 122 (82%) |
-| Grammar | 401 quizzes | 33.4 h | 95 (64%) |
-| Vocab | 10,174 cards | 14.1 h | 85 (57%) |
-| Reading | 520 min | 8.7 h | 29 (19%) |
+| Listening | 5,013 min | 83.5 h | 123 (82%) |
+| Grammar | 406 quizzes | 33.8 h | 96 (64%) |
+| Vocab | 10,302 cards | 14.3 h | 86 (57%) |
+| Reading | 525 min | 8.8 h | 30 (20%) |
 | Writing | 17 prompts | 4.2 h | 14 (9%) |
-| Speaking | 700 min | 11.7 h | 33 (22%) |
-| **Total** | | **155 h** | |
+| Speaking | 705 min | 11.8 h | 34 (23%) |
+| **Total** | | **156 h** | |
 
 ## 7-day rolling trend
 
@@ -75,14 +75,14 @@ same data, interactive.
 
 | Skill | Last 7 days |
 |:--|--:|
-| Listening | 283 min |
-| Grammar | 22 quizzes |
-| Vocab | 413 cards |
-| Reading | 55 min |
-| Writing | 1 prompts |
-| Speaking | 35 min |
+| Listening | 243 min |
+| Grammar | 27 quizzes |
+| Vocab | 391 cards |
+| Reading | 25 min |
+| Writing | 0 prompts |
+| Speaking | 30 min |
 
-<sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 15min/prompt. 103 h of that is logged directly.</sub>
+<sub>Total time converts counts to minutes: vocab 5s/card · grammar 5min/lesson · writing 15min/prompt. 104 h of that is logged directly.</sub>
 
 <!-- STATS:END -->
 
