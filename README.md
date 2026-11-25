@@ -9,7 +9,7 @@ same data, interactive.
 
 <!-- STATS:START -->
 
-<sub>Updated 24 Nov 2026, 14:56 UTC &nbsp;·&nbsp; 175 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 22 Nov 2026</sub>
+<sub>Updated 25 Nov 2026, 14:31 UTC &nbsp;·&nbsp; 175 days tracked &nbsp;·&nbsp; 01 Jun 2026 – 22 Nov 2026</sub>
 
 | Consistency | Total time | Median weekly time | Last 7 days | Last 30 days |
 |:-:|:-:|:-:|:-:|:-:|
